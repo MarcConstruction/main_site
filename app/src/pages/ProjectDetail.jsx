@@ -183,8 +183,8 @@ export default function ProjectDetail() {
                 <div className="row"><span>Finishing &amp; handover</span><span className="mono pending">MAR 2027</span></div>
               </div>
               <div className="blueprint progress-note">
-                <h3>Monthly progress on WhatsApp</h3>
-                <p>Every booked family gets dated site photographs on the 1st.</p>
+                <h3>Regular progress on WhatsApp</h3>
+                <p>Every booked family gets dated site photographs.</p>
                 <a className="btn btn-secondary" href="https://wa.me/919552555621" target="_blank" rel="noopener noreferrer">Get updates</a>
               </div>
             </div>

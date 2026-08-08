@@ -6,8 +6,8 @@ import { PROJECTS, TESTIMONIALS } from "../data/projects.js";
 import { thumb, card, hero } from "../lib/img.js";
 
 const WHY = [
-  ["01", "On-time possession", "Committed dates in the agreement, and a monthly progress note to every buyer."],
-  ["02", "Quality construction", "RCC design by empanelled consultants, third-party cube testing on every pour."],
+  ["01", "On-time possession", "Committed dates in the agreement, and a regular progress update to every buyer."],
+  ["02", "Quality construction", "Construction according to RCC design. Concrete and steel are checked at site as the work goes up."],
   ["03", "Transparent dealings", "One price sheet, no hidden heads, clear payment milestones against work done."],
   ["04", "RERA-compliant", "Every project registered, every number printed on its page with the official QR."]
 ];
