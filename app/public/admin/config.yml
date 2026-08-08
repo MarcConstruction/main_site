@@ -3,15 +3,20 @@
 # Git-based: every save is a commit to this repo, so content keeps full history,
 # no API keys ship to the browser, and the static build keeps working untouched.
 #
-# Auth is Netlify Identity via Git Gateway, so there is no OAuth app to register
-# and no client secret anywhere in this file. Enable Identity + Git Gateway in
-# the Netlify site settings, then invite editors by email.
+# Auth is a GitHub OAuth app, handled by api/auth.js and api/callback.js on
+# Vercel. Git Gateway was Netlify-only; this is its replacement. The client
+# secret lives in Vercel's environment variables, never in this file.
+#
+# Editing therefore requires a GitHub account with write access to the repo.
 #
 # `branch` must match the repo's default branch.
 
 backend:
-  name: git-gateway
+  name: github
+  repo: MarcConstruction/main_site
   branch: main
+  base_url: https://www.marcconstruction.in
+  auth_endpoint: api/auth
   commit_messages:
     create: 'content: add {{collection}} "{{slug}}"'
     update: 'content: update {{collection}} "{{slug}}"'
@@ -19,8 +24,11 @@ backend:
     uploadMedia: 'content: upload {{path}}'
     deleteMedia: 'content: delete {{path}}'
 
-# Editors get a preview branch + a Publish step rather than committing live.
-publish_mode: editorial_workflow
+# ponytail: editorial_workflow is off. It turns every save into a pull request
+# with a separate Publish click, which earns its keep when several people edit
+# and someone reviews. With a single editor who is also the developer it is
+# just an extra step on the way to the same commit. Turn it back on the day a
+# second editor arrives.
 
 media_folder: app/public/assets
 public_folder: /assets
