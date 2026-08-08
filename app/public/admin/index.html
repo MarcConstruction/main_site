@@ -7,8 +7,91 @@
 <meta name="robots" content="noindex, nofollow" />
 <title>Marc Construction · content admin</title>
 <link rel="icon" href="/assets/marc-mark-ink.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&family=Barlow+Condensed:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* Marc branding over Decap's stock UI.
+     ------------------------------------------------------------------
+     Decap styles itself with emotion, so its class names are hashes like
+     `css-1x2y3z` that change whenever the library does. Two things keep this
+     stylesheet from rotting: the CMS version below is pinned exactly (no
+     caret), and every rule here hangs off `#nc-root` or an element name
+     rather than a hash. An id outranks emotion's single-class selectors, so
+     these win without a wall of !important. */
+
+  :root {
+    --marc-bg: #faf7f1;
+    --marc-surface: #f2ede3;
+    --marc-panel: #ffffff;
+    --marc-ink: #241d16;
+    --marc-muted: #7d7568;
+    --marc-gold: #a4864f;
+    --marc-gold-bright: #c4a66c;
+    --marc-line: rgba(36, 29, 22, 0.16);
+  }
+
+  /* --- the ground. Decap ships a cold grey; the site is warm ivory. --- */
+  html, body { background: var(--marc-bg); }
+  #nc-root > div:first-of-type { background: var(--marc-bg); }
+
+  /* --- type. The single biggest reason the panel read as generic: it was
+         set in system sans while the whole site is Barlow. --- */
+  #nc-root,
+  #nc-root input,
+  #nc-root textarea,
+  #nc-root select,
+  #nc-root button {
+    font-family: "Barlow", system-ui, sans-serif;
+    color: var(--marc-ink);
+  }
+
+  #nc-root h1, #nc-root h2, #nc-root h3, #nc-root h4, #nc-root h5 {
+    font-family: "Barlow Condensed", system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  /* --- login screen. Decap renders it as a lone <section>, so this is the
+         one place a bare element selector is unambiguous. --- */
+  #nc-root section {
+    background: var(--marc-panel);
+    border: 1px solid var(--marc-line);
+    border-radius: 16px;
+    box-shadow: 0 14px 38px rgba(43, 38, 32, 0.22);
+  }
+
+  #nc-root section img {
+    max-width: 210px;
+    height: auto;
+  }
+
+  #nc-root section button {
+    background: var(--marc-gold);
+    color: var(--marc-ink);
+    font-family: "Barlow Condensed", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.01em;
+    border: 0;
+    border-radius: 1199px;
+    padding: 11px 22px;
+    transition: background-color .18s ease;
+  }
+  #nc-root section button:hover { background: var(--marc-gold-bright); }
+
+  /* --- focus ring, matching the site's --- */
+  #nc-root :focus-visible {
+    outline: 2px solid var(--marc-gold);
+    outline-offset: 2px;
+  }
+</style>
 </head>
 <body>
-<script src="https://unpkg.com/decap-cms@^3.8.4/dist/decap-cms.js"></script>
+<!-- Pinned exactly, no caret. The stylesheet above leans on Decap's rendered
+     structure, so an automatic minor bump from the CDN could quietly restyle
+     the panel. Upgrade deliberately, then re-check the login screen. -->
+<script src="https://unpkg.com/decap-cms@3.8.4/dist/decap-cms.js"></script>
 </body>
 </html>

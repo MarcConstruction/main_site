@@ -33,6 +33,13 @@ backend:
 media_folder: app/public/assets
 public_folder: /assets
 
+# Branding. These three are Decap's own options rather than CSS, so they
+# survive version bumps: the wordmark replaces Decap's logo on the login
+# screen, and the two URLs give editors a link back to the live site.
+logo_url: /assets/marc-wordmark-ink.png
+site_url: https://www.marcconstruction.in
+display_url: https://www.marcconstruction.in
+
 collections:
   # ── Projects ────────────────────────────────────────────────────────────
   - name: projects
