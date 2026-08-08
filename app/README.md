@@ -73,17 +73,16 @@ Auth is **Netlify Identity via Git Gateway** — no OAuth app to register, no
 client secret in the repo. `netlify.toml` and the Identity wiring are already in
 place; what remains needs your accounts:
 
-1. **Put the code in a Git repo.** Git Gateway commits on the editor's behalf,
-   so there must be a repo to commit to. This folder is not one yet.
-2. **Create the Netlify site** from that repo. `netlify.toml` already sets
-   base `app`, publish `dist`, and Node 22.
-3. **Enable Identity, then Git Gateway** in Site settings → Identity.
-4. **Set registration to invite-only** and invite the Marc staff by email.
-   Leaving it open lets anyone sign up and edit the site.
-5. Confirm the repo's default branch is `main`, or change `branch` in
-   `public/admin/config.yml`.
+The repo is `github.com/MarcConstruction/main_site`, default branch `main` —
+which is what `branch` in `public/admin/config.yml` points at. What remains:
 
-Until step 3, `/admin/` shows the login screen but cannot authenticate.
+1. **Create the Netlify site** from that repo. `netlify.toml` already sets
+   base `app`, publish `dist`, and Node 22.
+2. **Enable Identity, then Git Gateway** in Site settings → Identity.
+3. **Set registration to invite-only** and invite the Marc staff by email.
+   Leaving it open lets anyone sign up and edit the site.
+
+Until step 2, `/admin/` shows the login screen but cannot authenticate.
 
 `publish_mode: editorial_workflow` is on, so an edit becomes a pull request with
 a Publish step rather than committing straight to live.
