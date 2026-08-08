@@ -114,12 +114,27 @@ to the JSON and to `admin/config.yml`, not to that module.
   drawings with their area tables printed on them, which is why carpet areas are
   not retyped anywhere.
 
+## Enquiries
+
+The contact form inserts into a Supabase `enquiries` table over plain `fetch`
+— PostgREST is HTTP, and one insert does not justify a client library. Set
+`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (see `.env.example`) locally
+and in Vercel. Run `supabase/enquiries.sql` once in the SQL editor.
+
+The anon key ships in the browser on purpose. Row-level security is what
+protects the table: insert-only for `anon`, no read policy at all, so nobody
+can pull other people's phone numbers back out. The `pattern` attribute on the
+phone input is a convenience — the CHECK constraints in that SQL are the
+validation that actually holds, since a crafted request never touches the form.
+
+Staff read enquiries in the Supabase dashboard. If it fails, the form says so
+and shows the phone and WhatsApp links rather than pretending it sent.
+
 ## Not wired
 
 | What | Where |
 | --- | --- |
 | CMS login | Needs a Git repo + Netlify Identity/Git Gateway enabled (see Admin above) |
-| Enquiry form submission | `Contact.jsx` — shows the designed success state, sends nothing |
 | All-sites map | `ProjectDetail.jsx` — set `MY_MAP_ID` from a Google My Map (import `../marc-sites.csv`) |
 | 3D model, plan/brochure/RERA downloads | buttons are inert |
 | Leadership portraits, 2 of 3 testimonial photos | placeholders |

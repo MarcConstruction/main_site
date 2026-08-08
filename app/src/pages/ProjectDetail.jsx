@@ -7,7 +7,7 @@ const GALLERY = [
   { cap: "Signature elevation, east approach", tag: "RENDER", img: "/assets/rainflower-elevation.png" },
   { cap: "Street view at dusk", tag: "RENDER", img: "/assets/rainflower-dusk.png" },
   { cap: "Daylight elevation from the avenue", tag: "RENDER", img: "/assets/rainflower-day.png" },
-  { cap: "Aerial — podium and landscape court", tag: "RENDER", img: "/assets/rainflower-aerial.png" },
+  { cap: "Aerial view of the podium and landscape court", tag: "RENDER", img: "/assets/rainflower-aerial.png" },
   { cap: "Living room, 3 BHK", tag: "INTERIOR", img: "/assets/interior-living.png" },
   { cap: "Family lounge, 2 BHK", tag: "INTERIOR", img: "/assets/interior-lounge.png" }
 ];
@@ -58,7 +58,7 @@ export default function ProjectDetail() {
     const slug = new URLSearchParams(window.location.search).get("p");
     const found = bySlug(slug) || PROJECTS[0];
     setP(found);
-    document.title = `${found.name} — Marc Construction`;
+    document.title = `${found.name} · Marc Construction`;
   }, []);
 
   useEffect(() => {
@@ -177,8 +177,8 @@ export default function ProjectDetail() {
               <div className="sec-head"><span className="mono kicker">03</span><h2>Progress</h2></div>
               <div className="rows">
                 <div className="row"><span>Excavation &amp; footing</span><span className="mono kicker">COMPLETE</span></div>
-                <div className="row"><span>Wing A — 11 slabs</span><span className="mono kicker">COMPLETE</span></div>
-                <div className="row"><span>Wing B — 7 of 11 slabs</span><span className="mono muted">IN PROGRESS</span></div>
+                <div className="row"><span>Wing A, 11 slabs</span><span className="mono kicker">COMPLETE</span></div>
+                <div className="row"><span>Wing B, 7 of 11 slabs</span><span className="mono muted">IN PROGRESS</span></div>
                 <div className="row"><span>Blockwork &amp; plaster</span><span className="mono muted">IN PROGRESS</span></div>
                 <div className="row"><span>Finishing &amp; handover</span><span className="mono pending">MAR 2027</span></div>
               </div>
@@ -224,7 +224,7 @@ export default function ProjectDetail() {
               )}
               <figure className="blueprint plan-sheet">
                 <img src={plans[Math.min(plan, plans.length - 1)].img}
-                  alt={`${p.name} — ${plans[Math.min(plan, plans.length - 1)].label} plan`} />
+                  alt={`${p.name}, ${plans[Math.min(plan, plans.length - 1)].label} plan`} />
               </figure>
               <figcaption className="mono plan-note">
                 {plans[Math.min(plan, plans.length - 1)].label.toUpperCase()} · AREAS AS PRINTED ON THE SHEET · RERA CARPET
@@ -276,7 +276,7 @@ export default function ProjectDetail() {
           <div className="location">
             <div className="blueprint map">
               <div className="shot map-canvas">
-                <iframe title={`Map — ${p.name}, ${p.locality}`} loading="lazy"
+                <iframe title={`Map of ${p.name}, ${p.locality}`} loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade" src={mapSrc} />
               </div>
               <div className="bar">

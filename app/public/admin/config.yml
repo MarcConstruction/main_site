@@ -35,15 +35,15 @@ collections:
         file: app/src/content/projects.json
         description: >-
           The portfolio. MahaRERA values must read exactly as the authority has
-          them — "To confirm" and "—" are real states; never invent a number.
+          them. "To confirm" is a real state; never invent a number.
         fields:
           - name: projects
             label: Projects
             label_singular: Project
             widget: list
-            summary: '{{fields.name}} — {{fields.locality}} ({{fields.status}})'
+            summary: '{{fields.name}} · {{fields.locality}} ({{fields.status}})'
             fields:
-              - { name: slug, label: URL slug, widget: string, hint: 'Used in project.html?p=… — changing it breaks existing links.' }
+              - { name: slug, label: URL slug, widget: string, hint: 'Used in project.html?p=… Changing it breaks existing links.' }
               - { name: name, label: Name, widget: string }
               - { name: locality, label: Locality, widget: select, options: [Ahilyanagar, Savedi, Nalegaon, Bhistabag, Tarakpur, Borude Mala] }
               - { name: status, label: Status, widget: select, options: [Ongoing, Completed, Upcoming] }
@@ -55,19 +55,19 @@ collections:
                 options: ['1 BHK', '2 BHK', '3 BHK', '4 BHK', Shop, Office]
                 hint: Drives the filters on the projects page.
               - { name: configLabel, label: Configuration label, widget: string, hint: 'How it reads on the page, e.g. "2 & 3 BHK".' }
-              - { name: rera, label: MahaRERA number, widget: string, hint: 'Exactly as registered. Use "To confirm" if not yet issued, "—" if none.' }
+              - { name: rera, label: MahaRERA number, widget: string, hint: 'Exactly as registered. Use "To confirm" if not yet issued or none exists.' }
               - { name: towers, label: Towers, widget: string, required: false }
               - { name: possession, label: Possession, widget: string, required: false }
               - { name: line, label: Card line, widget: string, required: false }
-              - { name: img, label: Main image, widget: image, hint: 'Upload here — the resized versions are generated on deploy.' }
+              - { name: img, label: Main image, widget: image, hint: 'Upload here. The resized versions are generated on deploy.' }
               - name: coords
                 label: Map coordinates
                 widget: string
                 required: false
-                pattern: ['^-?\d+\.\d+,-?\d+\.\d+$', 'Use "lat,lng" — e.g. 19.1223267,74.7473039']
+                pattern: ['^-?\d+\.\d+,-?\d+\.\d+$', 'Use "lat,lng", e.g. 19.1223267,74.7473039']
                 hint: >-
                   Open the site in Google Maps, right-click the exact plot, click
-                  the lat/lng to copy. Leave empty rather than guessing — an empty
+                  the lat/lng to copy. Leave empty rather than guessing. An empty
                   field falls back to a locality view.
               - name: plans
                 label: Floor plans
@@ -84,12 +84,12 @@ collections:
       - name: testimonials
         label: All testimonials
         file: app/src/content/testimonials.json
-        description: Published with full name and locality — only add with the family's consent.
+        description: Published with full name and locality, so only add with the family's consent.
         fields:
           - name: testimonials
             label: Testimonials
             widget: list
-            summary: '{{fields.name}} — {{fields.locality}}'
+            summary: '{{fields.name}} · {{fields.locality}}'
             fields:
               - { name: quote, label: Quote, widget: text }
               - { name: name, label: Name, widget: string }
@@ -98,7 +98,7 @@ collections:
 
   # ── About ───────────────────────────────────────────────────────────────
   - name: eras
-    label: About — the story
+    label: About · the story
     files:
       - name: eras
         label: Decades
@@ -107,7 +107,7 @@ collections:
           - name: eras
             label: Decades
             widget: list
-            summary: '{{fields.year}} — {{fields.title}}'
+            summary: '{{fields.year}} · {{fields.title}}'
             fields:
               - { name: year, label: Year, widget: string }
               - { name: title, label: Title, widget: string }
@@ -124,7 +124,7 @@ collections:
           - name: walkthroughs
             label: Videos
             widget: list
-            summary: '{{fields.label}} — {{fields.len}}'
+            summary: '{{fields.label}} · {{fields.len}}'
             fields:
               - { name: label, label: Configuration, widget: string }
               - { name: url, label: YouTube URL, widget: string }
@@ -139,7 +139,7 @@ collections:
         label: Contact details
         file: app/src/content/site.json
         fields:
-          - { name: phone, label: Phone (dial format), widget: string, hint: 'With country code, no spaces — e.g. +919552555621' }
+          - { name: phone, label: Phone (dial format), widget: string, hint: 'With country code, no spaces, e.g. +919552555621' }
           - { name: phoneDisplay, label: Phone (as displayed), widget: string }
           - { name: whatsapp, label: WhatsApp link, widget: string }
           - name: legal

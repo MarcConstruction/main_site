@@ -823,6 +823,10 @@ select.input { appearance: none; background-image: none; }
 .contact-form .stack .btn { padding: 19px 29px; width: 100%; font-size: 19px; }
 .contact-form .consent { color: var(--color-neutral-600); }
 
+/* Honeypot. display:none rather than off-screen positioning, because screen
+   readers skip it too -- a real user should never meet this field. */
+.contact-form .hp { display: none; }
+
 .sent { padding: 48px 0; text-align: center; }
 .sent .mark {
   width: 91px; height: 91px; margin: 0 auto 31px;
@@ -1168,6 +1172,8 @@ select.input { appearance: none; background-image: none; }
 .why-expand .scroll-expand__title {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   letter-spacing: -0.025em;
+  /* The brighter logo gold, which is the one meant for type. */
+  color: var(--color-accent-400);
   text-shadow:
     0 1px 2px rgba(28, 21, 14, 0.55),
     0 4px 18px rgba(28, 21, 14, 0.45),

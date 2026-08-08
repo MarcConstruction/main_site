@@ -32,7 +32,7 @@ export default function Projects() {
 
       <main>
         <div className="wrap page-head">
-          <span className="mono kicker">PORTFOLIO · 1988 → 2026</span>
+          <span className="mono kicker">PORTFOLIO · 1987 → 2026</span>
           {/* Folds in on mount; the real string stays in the DOM for screen
               readers and search engines via the component's sr-only span. */}
           <h1 className="fold-head">
@@ -52,8 +52,8 @@ export default function Projects() {
             />
           </h1>
           <p>
-            Five sites under construction, eleven addresses delivered. Filter by what
-            you are looking for — every registration number is on the card.
+            Five sites under construction, 100+ addresses delivered. Filter by what
+            you are looking for. Every registration number is on the card.
           </p>
         </div>
 

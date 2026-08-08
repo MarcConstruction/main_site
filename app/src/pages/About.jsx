@@ -5,9 +5,9 @@ import { card } from "../lib/img.js";
 
 const LEADERS = [
   ["FOUNDER & MANAGING DIRECTOR", "Mr. Makarand Madhav Kulkarni",
-   "Civil engineer by training, on site since 1988. Signs off every structural drawing and still walks each project before slab-pour."],
+   "Civil engineer by training, on site since 1987. Signs off every structural drawing and still walks each project before slab-pour."],
   ["DIRECTOR", "Mr. Rohan Makarand Kulkarni",
-   "Second generation. Leads design, RERA compliance and the customer side — from first enquiry to possession letter."]
+   "Second generation. Leads design, RERA compliance and the customer side, from first enquiry to possession letter."]
 ];
 
 const REGS = [
@@ -30,10 +30,10 @@ export default function About() {
           <div className="about-head">
             <div>
               <span className="mono kicker">ABOUT MARC · <span lang="mr">रचनात्मक | समयबद्ध | नवनिर्मिती</span></span>
-              <h1>A builder the district has watched for 38 years</h1>
+              <h1>A builder the district has watched for 39 years</h1>
               <p>
-                Marc Construction has built in one city since 1988. We are answerable to
-                the people we meet at the market — which is a stricter standard than any
+                Marc Construction has built in one city since 1987. We are answerable to
+                the people we meet at the market, which is a stricter standard than any
                 brochure.
               </p>
             </div>
@@ -96,8 +96,8 @@ export default function About() {
         <section className="band-accent on-dark tight gap-top">
           <div className="wrap">
             <div className="bignums">
-              <div><b>38</b><span className="mono">YEARS OF BUILDING</span></div>
-              <div><b>25+</b><span className="mono">PROJECTS DELIVERED</span></div>
+              <div><b>39</b><span className="mono">YEARS OF BUILDING</span></div>
+              <div><b>100+</b><span className="mono">PROJECTS DELIVERED</span></div>
               <div><b>3,000+</b><span className="mono">FAMILIES HOUSED</span></div>
               <div><b>5</b><span className="mono">SITES UNDER CONSTRUCTION</span></div>
             </div>

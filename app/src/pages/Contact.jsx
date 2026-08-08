@@ -9,16 +9,50 @@ const OFFICE = [
   ["ENTITY", "Madhumalati Constructions Pvt Ltd · CIN U45202MH1996PTC100650"]
 ];
 
+/* Supabase over plain fetch. PostgREST is just HTTP, and one insert does not
+   justify @supabase/supabase-js -- the README asks that a dependency earn its
+   place. The anon key is meant to ship in the browser; row-level security in
+   supabase/enquiries.sql is what actually protects the table. */
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
 export default function Contact() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState("idle");
   const formRef = useRef(null);
 
-  /* No backend is wired: this shows the designed success state and sends
-     nothing. Point it at the CRM/mail endpoint before launch. */
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!formRef.current.reportValidity()) return;
-    setSent(true);
+
+    const data = Object.fromEntries(new FormData(formRef.current));
+
+    /* Honeypot: a hidden field no human can see. Bots fill every input, so
+       anything here is automated. Show them the success state and drop it. */
+    if (data.company) return setStatus("sent");
+
+    setStatus("sending");
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/enquiries`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify({
+          name: data.name || null,
+          phone: data.phone,
+          project: data.project || null,
+          message: data.message || null
+        })
+      });
+      if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+      setStatus("sent");
+    } catch (err) {
+      console.error("enquiry failed", err);
+      setStatus("error");
+    }
   };
 
   return (
@@ -30,7 +64,7 @@ export default function Contact() {
           <span className="mono kicker">CONTACT</span>
           <h1>Talk to us before you decide</h1>
           <p>
-            Call, WhatsApp, or leave your number — a Marc person replies the same working
+            Call, WhatsApp, or leave your number. A Marc person replies the same working
             day. Site visits run every day from 10:00 to 19:00.
           </p>
         </div>
@@ -43,7 +77,7 @@ export default function Contact() {
         <div className="wrap contact-wrap">
           <div className="contact">
             <div className="blueprint contact-form" id="enquiry">
-              {!sent ? (
+              {status !== "sent" ? (
                 <form ref={formRef} onSubmit={submit} noValidate>
                   <h2>Request a call back</h2>
                   <p className="sub">Name and phone are enough. We do not share your number.</p>
@@ -60,9 +94,9 @@ export default function Contact() {
                     <div className="field">
                       <label htmlFor="f-project">Project of interest</label>
                       <select className="input" id="f-project" name="project" defaultValue="">
-                        <option value="">Any — help me choose</option>
+                        <option value="">Any, help me choose</option>
                         {PROJECTS.filter((p) => p.status === "Ongoing").map((p) => (
-                          <option key={p.slug} value={p.slug}>{p.name} — {p.locality}</option>
+                          <option key={p.slug} value={p.slug}>{p.name}, {p.locality}</option>
                         ))}
                       </select>
                     </div>
@@ -71,7 +105,20 @@ export default function Contact() {
                       <textarea className="input" id="f-message" name="message"
                         placeholder="Configuration, budget, when you plan to move" />
                     </div>
-                    <button type="submit" className="btn btn-primary">Send enquiry</button>
+                    <div className="field hp" aria-hidden="true">
+                      <label htmlFor="f-company">Company</label>
+                      <input id="f-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+                    </div>
+                    <button type="submit" className="btn btn-primary" disabled={status === "sending"}>
+                      {status === "sending" ? "Sending…" : "Send enquiry"}
+                    </button>
+                    {status === "error" && (
+                      <p className="sub" role="alert">
+                        That did not send. Please call <a href={`tel:${PHONE}`}>{PHONE_DISPLAY}</a> or
+                        message us on <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a>.
+                        We do not want to lose your enquiry.
+                      </p>
+                    )}
                     <span className="mono consent">
                       BY SENDING THIS YOU AGREE TO BE CONTACTED ABOUT MARC PROJECTS.
                     </span>
@@ -87,11 +134,10 @@ export default function Contact() {
                   <h2>Enquiry received</h2>
                   <p>
                     A Marc executive will call you today between 10:00 and 19:00.
-                    Reference number ENQ-2026-0418.
                   </p>
-                  <span className="mono">WE HAVE ALSO SENT THE BROCHURE TO YOUR WHATSAPP.</span>
+                  <span className="mono">FOR ANYTHING URGENT, CALL {PHONE_DISPLAY}.</span>
                   <div className="actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => setSent(false)}>
+                    <button type="button" className="btn btn-secondary" onClick={() => setStatus("idle")}>
                       Send another enquiry
                     </button>
                     <a className="btn btn-primary" href="/projects.html">Browse projects</a>
@@ -123,7 +169,7 @@ export default function Contact() {
 
               <div className="blueprint map contact-map">
                 <div className="shot map-canvas">
-                  <iframe title="Map — Marc House, Savedi, Ahilyanagar" loading="lazy"
+                  <iframe title="Map of Marc House, Savedi, Ahilyanagar" loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     src="https://maps.google.com/maps?q=Marc%20House%2C%20Nagar-Manmad%20Road%2C%20Savedi%2C%20Ahmednagar%2C%20Maharashtra%20414003&z=15&output=embed" />
                 </div>

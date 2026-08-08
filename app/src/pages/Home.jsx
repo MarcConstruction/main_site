@@ -77,9 +77,9 @@ export default function Home() {
             <div className="masthead-grid">
               <div>
                 <p className="tagline" lang="mr">रचनात्मक | समयबद्ध | नवनिर्मिती</p>
-                <h1>Homes Ahilyanagar has trusted since 1988</h1>
+                <h1>Homes Ahilyanagar has trusted since 1987</h1>
                 <p className="lede">
-                  Marc Construction — 25+ delivered addresses across one district,
+                  Marc Construction has 100+ delivered addresses across one district,
                   every one on the register.
                 </p>
                 <div className="hero-actions">
@@ -118,8 +118,8 @@ export default function Home() {
         <section className="ledger">
           <div className="wrap">
             <div className="ledger-row">
-              <div className="fig"><b><Counter to={38} /></b><span className="mono">YEARS</span></div>
-              <div className="fig"><b><Counter to={25} suffix="+" /></b><span className="mono">DELIVERED</span></div>
+              <div className="fig"><b><Counter to={39} /></b><span className="mono">YEARS</span></div>
+              <div className="fig"><b><Counter to={100} suffix="+" /></b><span className="mono">DELIVERED</span></div>
               <div className="fig"><b><Counter to={3000} suffix="+" /></b><span className="mono">FAMILIES HOUSED</span></div>
               <div className="creds">
                 <span className="mono">CREDAI MEMBER</span>
@@ -150,8 +150,8 @@ export default function Home() {
           <ScrollExpand
             useWindowScroll
             src={hero("/assets/bluebell-elevation.png")}
-            alt="Bluebell, Ahilyanagar — elevation"
-            title="Thirty-eight years in one district"
+            alt="Bluebell, Ahilyanagar, elevation"
+            title="Thirty-nine years in one district"
             scrollHint="SCROLL"
             startWidth={46}
             startHeight={62}
@@ -170,9 +170,9 @@ export default function Home() {
         <section className="wrap sec why-after">
           <span className="mono kicker">WHY MARC</span>
           <p className="why-lede">
-            Marc has built only in and around Ahilyanagar since 1988, incorporated in
-            1996. The families who bought our first flats live beside our newest sites
-            — that proximity is the whole standard.
+            Marc has built only in and around Ahilyanagar since 1987. The families who
+            bought our first flats live beside our newest sites, and that proximity is
+            the whole standard.
           </p>
           <div className="why-points">
             {WHY.map(([n, title, body]) => (
