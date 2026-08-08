@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Marc Construction — Shaping Ahilyanagar since 1988</title>
+<meta name="description" content="Marc Construction has built in and around Ahilyanagar since 1988 — 25+ delivered addresses, five sites under construction, every project MahaRERA registered." />
+<link rel="icon" href="/assets/marc-mark-ink.png" />
+<script>
+  /* Netlify Identity invite, recovery and confirmation links land on the site
+     root with a token in the hash. Load the widget only then and send the
+     editor to /admin/ — it exists for a handful of staff, and every other
+     visitor is here to look at flats, not to pay for an auth bundle. */
+  if (/\b(invite_token|recovery_token|confirmation_token|email_change_token)=/.test(location.hash)) {
+    var s = document.createElement("script");
+    s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
+    s.onload = function () {
+      window.netlifyIdentity.on("init", function (user) {
+        if (!user) {
+          window.netlifyIdentity.on("login", function () { location.href = "/admin/"; });
+        }
+      });
+      window.netlifyIdentity.init();
+    };
+    document.head.appendChild(s);
+  }
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/entries/index.jsx"></script>
+</body>
+</html>

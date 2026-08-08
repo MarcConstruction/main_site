@@ -1,0 +1,20 @@
+[
+  {
+    "label": "2 BHK",
+    "url": "https://www.youtube.com/watch?v=rzfq84IuV7k",
+    "img": "/assets/interior-lounge.png",
+    "len": "03:41"
+  },
+  {
+    "label": "3 BHK",
+    "url": "https://www.youtube.com/watch?v=hAi-VllstOg",
+    "img": "/assets/interior-living.png",
+    "len": "04:12"
+  },
+  {
+    "label": "4 BHK",
+    "url": "https://www.youtube.com/watch?v=If-hp8gVnbY",
+    "img": "/assets/interior-workfromhome.png",
+    "len": "05:06"
+  }
+]

@@ -1,0 +1,33 @@
+# Netlify build settings.
+#
+# The site lives in app/, not the repo root, so `base` points there and every
+# other path is relative to it.
+
+[build]
+  base = "app"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 requires ^20.19 || >=22.12. Pinned so a Netlify default bump can
+  # never silently break the build.
+  NODE_VERSION = "22"
+
+# The admin is a real directory with its own index.html; make sure the bare
+# /admin path lands there rather than falling through.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/index.html"
+  status = 200
+
+# Keep the CMS out of search results.
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Hashed build assets are immutable; the images are not.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

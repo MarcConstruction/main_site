@@ -1,0 +1,25 @@
+# dependencies + build output
+node_modules/
+dist/
+.vite/
+
+# generated image sizes — rebuilt by `npm run thumbs`
+app/public/assets/thumbs/
+app/public/assets/cards/
+app/public/assets/hero/
+
+# design source material — 190 MB of scraps, uploads and brochures that the
+# build never reads (Netlify builds `app/` only). Kept out so clones and every
+# CMS commit stay small. Back these up outside the repo.
+project/
+*.docx
+
+# local tooling
+.netlify/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

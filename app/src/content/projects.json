@@ -1,0 +1,285 @@
+[
+  {
+    "slug": "rainflower",
+    "name": "Rainflower",
+    "locality": "Ahilyanagar",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK",
+      "4 BHK"
+    ],
+    "configLabel": "2, 3 & 4 BHK",
+    "rera": "To confirm",
+    "towers": "2 wings · G+11",
+    "possession": "To confirm",
+    "line": "2, 3 & 4 BHK · Walkthroughs available",
+    "img": "/assets/rainflower-elevation.png",
+    "coords": "19.1223267,74.7473039",
+    "plans": [
+      {
+        "label": "1st floor",
+        "img": "/assets/plans/rainflower-floor-1.png"
+      },
+      {
+        "label": "2nd–11th floor",
+        "img": "/assets/plans/rainflower-floor-2-11.png"
+      }
+    ]
+  },
+  {
+    "slug": "trident",
+    "name": "Trident",
+    "locality": "Savedi",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK"
+    ],
+    "configLabel": "2 & 3 BHK",
+    "rera": "P52200077919",
+    "towers": "G+11",
+    "possession": "Dec 2027",
+    "line": "2 & 3 BHK · Possession Dec 2027",
+    "img": "/assets/trident-dusk.png",
+    "coords": "19.1230232,74.7218829",
+    "plans": [
+      {
+        "label": "2nd–9th floor",
+        "img": "/assets/plans/trident-floor-2-9.png"
+      }
+    ]
+  },
+  {
+    "slug": "bluebell",
+    "name": "Bluebell",
+    "locality": "Ahilyanagar",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK"
+    ],
+    "configLabel": "2 & 3 BHK",
+    "rera": "To confirm",
+    "towers": "G+11",
+    "possession": "To confirm",
+    "line": "2 & 3 BHK · Brochure available",
+    "img": "/assets/bluebell-elevation.png",
+    "coords": "19.1140017,74.733846",
+    "plans": [
+      {
+        "label": "2nd–7th floor",
+        "img": "/assets/plans/bluebell-floor-2-7.png"
+      }
+    ]
+  },
+  {
+    "slug": "sierra",
+    "name": "Sierra",
+    "locality": "Ahilyanagar",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "3 BHK"
+    ],
+    "configLabel": "3 BHK",
+    "rera": "To confirm",
+    "towers": "G+11",
+    "possession": "To confirm",
+    "line": "3 BHK · Brochure available",
+    "img": "/assets/sierra-elevation.png",
+    "coords": "19.1241512,74.7399494",
+    "plans": [
+      {
+        "label": "Typical floor",
+        "img": "/assets/plans/sierra-floor-typical.png"
+      }
+    ]
+  },
+  {
+    "slug": "snowbell",
+    "name": "Snowbell",
+    "locality": "Ahilyanagar",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK"
+    ],
+    "configLabel": "2 & 3 BHK",
+    "rera": "To confirm",
+    "towers": "G+11",
+    "possession": "To confirm",
+    "line": "2 & 3 BHK · Brochure available",
+    "img": "/assets/snowbell-elevation.png",
+    "coords": "19.1237911,74.7403149",
+    "plans": [
+      {
+        "label": "Typical floor",
+        "img": "/assets/plans/snowbell-floor-typical.png"
+      }
+    ]
+  },
+  {
+    "slug": "arabella",
+    "name": "Arabella",
+    "locality": "Nalegaon",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK"
+    ],
+    "configLabel": "2 & 3 BHK",
+    "rera": "P52200048057",
+    "towers": "G+11",
+    "possession": "Mar 2027",
+    "line": "2 & 3 BHK · Possession Mar 2027",
+    "img": "/assets/bluebell-street.png",
+    "coords": "19.102931,74.729069"
+  },
+  {
+    "slug": "abhiram",
+    "name": "Abhiram",
+    "locality": "Bhistabag",
+    "status": "Ongoing",
+    "type": "Residential",
+    "configs": [
+      "1 BHK",
+      "2 BHK"
+    ],
+    "configLabel": "1 & 2 BHK",
+    "rera": "P52200049407",
+    "towers": "G+7",
+    "possession": "Jun 2027",
+    "line": "1 & 2 BHK · Possession Jun 2027",
+    "img": "/assets/sierra-street.png"
+  },
+  {
+    "slug": "bluestone",
+    "name": "Bluestone",
+    "locality": "Savedi",
+    "status": "Ongoing",
+    "type": "Commercial",
+    "configs": [
+      "Shop",
+      "Office"
+    ],
+    "configLabel": "Shops & offices",
+    "rera": "P52200052558",
+    "towers": "G+4",
+    "possession": "Sep 2027",
+    "line": "Shops & offices · Possession Sep 2027",
+    "img": "/assets/trident-day.png",
+    "coords": "19.1043047,74.7347696"
+  },
+  {
+    "slug": "the-courtyard-i",
+    "name": "The Courtyard Phase I",
+    "locality": "Savedi",
+    "status": "Completed",
+    "type": "Residential",
+    "configs": [
+      "2 BHK",
+      "3 BHK"
+    ],
+    "configLabel": "2 & 3 BHK",
+    "rera": "P52200000247",
+    "towers": "G+7",
+    "possession": "Handed over",
+    "line": "2 & 3 BHK · Handed over",
+    "img": "/assets/bluebell-aerial.png",
+    "coords": "19.1079819,74.7410736"
+  },
+  {
+    "slug": "siya-ram-residency",
+    "name": "Siya Ram Residency",
+    "locality": "Nalegaon",
+    "status": "Completed",
+    "type": "Residential",
+    "configs": [
+      "1 BHK",
+      "2 BHK"
+    ],
+    "configLabel": "1 & 2 BHK",
+    "rera": "P52200018653",
+    "towers": "G+4",
+    "possession": "Handed over",
+    "line": "1 & 2 BHK · Handed over",
+    "img": "/assets/rainflower-day.png",
+    "coords": "19.1153991,74.7234548"
+  },
+  {
+    "slug": "utkarsha-iii",
+    "name": "Utkarsha Phase III",
+    "locality": "Tarakpur",
+    "status": "Completed",
+    "type": "Residential",
+    "configs": [
+      "2 BHK"
+    ],
+    "configLabel": "2 BHK",
+    "rera": "—",
+    "towers": "G+4",
+    "possession": "Handed over",
+    "line": "2 BHK · Handed over",
+    "img": "/assets/trident-aerial.png",
+    "coords": "19.1100151,74.7256595"
+  },
+  {
+    "slug": "amrutkalash",
+    "name": "Amrutkalash",
+    "locality": "Borude Mala",
+    "status": "Completed",
+    "type": "Residential",
+    "configs": [
+      "1 BHK",
+      "2 BHK"
+    ],
+    "configLabel": "1 & 2 BHK",
+    "rera": "—",
+    "towers": "G+4",
+    "possession": "Handed over",
+    "line": "1 & 2 BHK · Handed over",
+    "img": "/assets/sierra-aerial-night.png",
+    "coords": "19.1101138,74.7271701"
+  },
+  {
+    "slug": "anand-enclave",
+    "name": "Anand Enclave",
+    "locality": "Bhistabag",
+    "status": "Completed",
+    "type": "Mixed-Use",
+    "configs": [
+      "2 BHK",
+      "Shop"
+    ],
+    "configLabel": "2 BHK & shops",
+    "rera": "—",
+    "towers": "G+4",
+    "possession": "Handed over",
+    "line": "2 BHK & shops · Handed over",
+    "img": "/assets/rainflower-aerial.png",
+    "coords": "19.1100382,74.7310585"
+  },
+  {
+    "slug": "magnolia",
+    "name": "Magnolia",
+    "locality": "Savedi",
+    "status": "Completed",
+    "type": "Residential",
+    "configs": [
+      "3 BHK"
+    ],
+    "configLabel": "3 BHK",
+    "rera": "P52200028201",
+    "towers": "G+7",
+    "possession": "Handed over",
+    "line": "3 BHK · Handed over",
+    "img": "/assets/snowbell-elevation.png",
+    "coords": "19.1242637,74.7404393"
+  }
+]

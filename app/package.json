@@ -1,0 +1,23 @@
+{
+  "name": "marc-construction",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/thumbs.mjs",
+    "build": "vite build",
+    "thumbs": "node scripts/thumbs.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.5",
+    "sharp": "^0.35.3",
+    "vite": "^8.2.1"
+  }
+}
