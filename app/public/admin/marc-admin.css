@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Marc Construction — Decap CMS theme
+   --------------------------------------------------------------------------
+   Decap styles itself with emotion, so class names look like
+   `css-1x2y3z-SidebarNavLink`. The hash changes between versions; the label
+   after it does not. So every selector here matches on the label suffix —
+   [class*="-SidebarNavLink"] — never the hash. That is the whole trick, and
+   it is why this file does not rot the way a hash-based one would.
+
+   Two supports underneath it:
+     - decap-cms is pinned to an exact version in index.html, so the CDN
+       cannot swap the bundle underneath these rules.
+     - Every rule is prefixed `#nc-root`, which outranks emotion's
+       single-class selectors without a wall of !important.
+
+   Decap's own palette, replaced throughout:
+     #157cfc / #0969ee / #3891ff  (blues)  ->  Marc gold
+   ========================================================================== */
+
+:root {
+  --marc-bg: #faf7f1;
+  --marc-surface: #f2ede3;
+  --marc-panel: #ffffff;
+  --marc-ink: #241d16;
+  --marc-ink-soft: #443e35;
+  --marc-muted: #7d7568;
+  --marc-gold: #a4864f;
+  --marc-gold-bright: #c4a66c;
+  --marc-gold-deep: #644e2f;
+  --marc-line: rgba(36, 29, 22, 0.16);
+  --marc-line-soft: rgba(36, 29, 22, 0.08);
+  --marc-on-dark: #faf7f1;
+
+  --marc-head: "Barlow Condensed", system-ui, sans-serif;
+  --marc-body: "Barlow", system-ui, sans-serif;
+  --marc-shadow-sm: 0 1.2px 2.4px rgba(43, 38, 32, 0.14);
+  --marc-shadow-md: 0 3.6px 12px rgba(43, 38, 32, 0.16);
+  --marc-shadow-lg: 0 14px 38px rgba(43, 38, 32, 0.22);
+}
+
+/* --------------------------------------------------------------------------
+   1. Ground and type
+   -------------------------------------------------------------------------- */
+
+html, body { background: var(--marc-bg); }
+
+#nc-root,
+#nc-root input,
+#nc-root textarea,
+#nc-root select,
+#nc-root button {
+  font-family: var(--marc-body);
+  color: var(--marc-ink);
+}
+
+#nc-root h1, #nc-root h2, #nc-root h3, #nc-root h4, #nc-root h5 {
+  font-family: var(--marc-head);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--marc-ink);
+}
+
+#nc-root > div:first-of-type { background: var(--marc-bg); }
+#nc-root a { color: var(--marc-gold-deep); text-underline-offset: 3.6px; }
+#nc-root a:hover { color: var(--marc-ink); }
+#nc-root :focus-visible { outline: 2px solid var(--marc-gold); outline-offset: 2px; }
+
+/* --------------------------------------------------------------------------
+   2. Top bar — Decap ships it white with blue tabs. The site's chrome is a
+      dark ink band, so the admin wears the same.
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-AppHeader"] {
+  background: var(--marc-ink);
+  box-shadow: var(--marc-shadow-md);
+  border-bottom: 0;
+}
+
+#nc-root [class*="-AppHeader"] a,
+#nc-root [class*="-AppHeader"] button,
+#nc-root [class*="-AppHeaderButton"] {
+  color: var(--marc-on-dark);
+  font-family: var(--marc-head);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  background: transparent;
+}
+
+#nc-root [class*="-AppHeaderButton"]:hover { color: var(--marc-gold-bright); }
+
+/* The active tab: Decap's blue becomes gold. */
+#nc-root [class*="-AppHeaderButton"][class*="ctive"],
+#nc-root [class*="-AppHeaderButton"]:focus {
+  color: var(--marc-gold-bright);
+}
+
+#nc-root [class*="-AppHeader"] svg { fill: currentColor; }
+#nc-root [class*="-avatarImage"] { border: 1px solid var(--marc-gold); }
+
+/* --------------------------------------------------------------------------
+   3. Collections sidebar — the blue active row is the most visible blue in
+      the whole panel.
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-SidebarNavLink"],
+#nc-root [class*="-TreeNavLink"] {
+  font-family: var(--marc-body);
+  color: var(--marc-ink-soft);
+  border-left: 2px solid transparent;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+#nc-root [class*="-SidebarNavLink"]:hover,
+#nc-root [class*="-TreeNavLink"]:hover {
+  background: var(--marc-surface);
+  color: var(--marc-ink);
+}
+
+#nc-root [class*="sidebarNavLinkActive"],
+#nc-root [class*="-SidebarNavLink"][class*="ctive"],
+#nc-root [class*="-TreeNavLink"][class*="ctive"] {
+  background: rgba(164, 134, 79, 0.12);
+  color: var(--marc-gold-deep);
+  border-left-color: var(--marc-gold);
+}
+
+#nc-root [class*="-SidebarNavLink"] svg,
+#nc-root [class*="-TreeNavLink"] svg { fill: currentColor; }
+
+/* --------------------------------------------------------------------------
+   4. Cards and panels
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-card"] {
+  background: var(--marc-panel);
+  border: 1px solid var(--marc-line-soft);
+  border-radius: 16px;
+  box-shadow: var(--marc-shadow-sm);
+}
+
+#nc-root [class*="-cardTopHeading"] {
+  font-family: var(--marc-head);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+#nc-root [class*="-cardTopDescription"] { color: var(--marc-muted); }
+#nc-root [class*="-ColumnHeader"] { font-family: var(--marc-head); color: var(--marc-ink); }
+#nc-root [class*="-viewControlsText"] { color: var(--marc-muted); }
+
+/* --------------------------------------------------------------------------
+   5. Buttons — gold pills, matching .btn on the site
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-button"],
+#nc-root [class*="-ActionButton"],
+#nc-root [class*="-ControlButton"],
+#nc-root [class*="-publishedButton"] {
+  font-family: var(--marc-head);
+  font-weight: 600;
+  font-size: 17px;
+  border-radius: 1199px;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+
+/* Decap's primary action is blue; the site's is gold with ink text. */
+#nc-root [class*="-button"][class*="ctive"],
+#nc-root [class*="-publishedButton"],
+#nc-root section button {
+  background: var(--marc-gold);
+  color: var(--marc-ink);
+  border: 0;
+}
+
+#nc-root [class*="-button"][class*="ctive"]:hover,
+#nc-root [class*="-publishedButton"]:hover,
+#nc-root section button:hover { background: var(--marc-gold-bright); }
+
+#nc-root [class*="-ControlButton"] { color: var(--marc-gold-deep); }
+#nc-root [class*="-ControlButton"]:hover { color: var(--marc-ink); }
+
+/* --------------------------------------------------------------------------
+   6. The entry editor
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-Editor"] { background: var(--marc-bg); }
+
+#nc-root [class*="-fieldLabel"] {
+  font-family: var(--marc-head);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--marc-muted);
+}
+
+#nc-root [class*="-EditorControl"] input,
+#nc-root [class*="-EditorControl"] textarea,
+#nc-root [class*="-TextControl"],
+#nc-root [class*="-DateTimeControl"] {
+  font-family: var(--marc-body);
+  background: var(--marc-surface);
+  border-radius: 5px;
+}
+
+#nc-root [class*="-EditorControl"] input:focus,
+#nc-root [class*="-EditorControl"] textarea:focus {
+  box-shadow: inset 0 0 0 2px var(--marc-gold);
+}
+
+#nc-root [class*="-requiredInput"] { box-shadow: inset 0 0 0 2px #f07178; }
+
+/* --------------------------------------------------------------------------
+   7. Dropdowns, list widgets, badges
+   -------------------------------------------------------------------------- */
+
+#nc-root [class*="-DropdownList"],
+#nc-root [class*="-dropdownList"] {
+  border-radius: 12px;
+  box-shadow: var(--marc-shadow-lg);
+  border: 1px solid var(--marc-line-soft);
+  overflow: hidden;
+}
+
+#nc-root [class*="-StyledMenuItem"]:hover,
+#nc-root [class*="-dropdownItem"]:hover {
+  background: var(--marc-surface);
+  color: var(--marc-gold-deep);
+}
+
+#nc-root [class*="-SortableListItem"],
+#nc-root [class*="-listControlItem"] {
+  border-radius: 12px;
+  border: 1px solid var(--marc-line-soft);
+}
+
+#nc-root [class*="-badge"],
+#nc-root [class*="-textBadge"] {
+  font-family: var(--marc-head);
+  background: rgba(164, 134, 79, 0.16);
+  color: var(--marc-gold-deep);
+  border-radius: 1199px;
+}
+
+#nc-root [class*="-ToggleHandle"] { background: var(--marc-gold); }
+#nc-root [class*="-caret"] { border-top-color: currentColor; }
+
+/* --------------------------------------------------------------------------
+   8. Login screen — the one place Decap renders a lone <section>
+   -------------------------------------------------------------------------- */
+
+#nc-root section {
+  background: var(--marc-panel);
+  border: 1px solid var(--marc-line);
+  border-radius: 16px;
+  box-shadow: var(--marc-shadow-lg);
+}
+
+#nc-root section img { max-width: 210px; height: auto; }
+
+#nc-root section button {
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  padding: 11px 22px;
+}
