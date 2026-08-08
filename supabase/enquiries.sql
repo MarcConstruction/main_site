@@ -25,6 +25,16 @@ create policy "public can submit an enquiry"
   on public.enquiries for insert to anon
   with check (true);
 
+-- Staff read the list at /enquiries.html, which signs in with Supabase Auth.
+-- `authenticated` means any signed-in user, so this policy is only as tight as
+-- your sign-up settings: turn OFF public sign-ups in
+-- Authentication -> Sign In / Providers -> Email, or anyone could register an
+-- account and read every customer's phone number. Create the staff user by
+-- hand in Authentication -> Users.
+create policy "signed-in staff can read enquiries"
+  on public.enquiries for select to authenticated
+  using (true);
+
 create index if not exists enquiries_created_at_idx
   on public.enquiries (created_at desc);
 

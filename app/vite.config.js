@@ -16,7 +16,10 @@ export default defineConfig({
         projects: resolve(here, "projects.html"),
         project: resolve(here, "project.html"),
         about: resolve(here, "about.html"),
-        contact: resolve(here, "contact.html")
+        contact: resolve(here, "contact.html"),
+        // Internal: the enquiries list. Not linked from the site, noindexed in
+        // the page and again in vercel.json.
+        enquiries: resolve(here, "enquiries.html")
       }
     }
   }

@@ -127,8 +127,19 @@ can pull other people's phone numbers back out. The `pattern` attribute on the
 phone input is a convenience — the CHECK constraints in that SQL are the
 validation that actually holds, since a crafted request never touches the form.
 
-Staff read enquiries in the Supabase dashboard. If it fails, the form says so
-and shows the phone and WhatsApp links rather than pretending it sent.
+If it fails, the form says so and shows the phone and WhatsApp links rather
+than pretending it sent.
+
+Staff read the list at **`/enquiries.html`** — a sixth entry in
+`vite.config.js`, signed in with Supabase Auth over the same plain `fetch`.
+It is not linked from anywhere on the site and is noindexed twice, in the page
+and in `vercel.json`.
+
+The read policy grants `select` to `authenticated`, meaning *any* signed-in
+user. So the security of this page rests entirely on **public sign-ups being
+disabled** in Supabase (Authentication → Sign In / Providers → Email). Leave
+them on and anyone can register an account and read every customer's phone
+number. Add staff by hand under Authentication → Users.
 
 ## Not wired
 

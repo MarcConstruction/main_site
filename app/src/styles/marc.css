@@ -827,6 +827,13 @@ select.input { appearance: none; background-image: none; }
    readers skip it too -- a real user should never meet this field. */
 .contact-form .hp { display: none; }
 
+/* --- /enquiries.html: the internal leads list --- */
+.enq-login { max-width: 420px; margin: 96px auto; padding: 32px; }
+.enq-head-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.enq { padding: 20px 24px; margin-bottom: 12px; }
+.enq-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.enq-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
 .sent { padding: 48px 0; text-align: center; }
 .sent .mark {
   width: 91px; height: 91px; margin: 0 auto 31px;
