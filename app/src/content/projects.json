@@ -2,18 +2,18 @@
   {
     "slug": "rainflower",
     "name": "Rainflower",
-    "locality": "Ahilyanagar",
+    "locality": "gulmohor road",
     "status": "Ongoing",
     "type": "Residential",
     "configs": [
-      "2 BHK",
       "3 BHK",
       "4 BHK"
     ],
-    "rera": "To confirm",
-    "towers": "2 wings · G+11",
+    "rera": "PR1010002601300",
+    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786262560207-rainflowerqr.jpeg",
+    "towers": "G+11",
     "possession": "To confirm",
-    "line": "2, 3 & 4 BHK · Walkthroughs available",
+    "line": "3 & 4 BHK · Walkthroughs available",
     "img": "/assets/rainflower-elevation.png",
     "coords": "19.1223267,74.7473039",
     "plans": [
@@ -26,7 +26,55 @@
         "label": "2nd–11th floor"
       }
     ],
-    "configLabel": "2, 3 & 4 BHK"
+    "specs": "",
+    "amenities": [
+      "Lifts",
+      "Power backup",
+      "CCTV",
+      "Landscaped garden",
+      "Play area",
+      "Covered parking"
+    ],
+    "videos": [
+      {
+        "len": "03:20",
+        "url": "https://www.youtube.com/watch?v=rzfq84IuV7k",
+        "label": "4 BHK"
+      },
+      {
+        "len": "02:29",
+        "url": "https://www.youtube.com/watch?v=hAi-VllstOg",
+        "label": "3 BHK"
+      }
+    ],
+    "media": [
+      {
+        "cap": "elevation",
+        "url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786294662268-rainflower-elevation.png",
+        "kind": "image",
+        "name": "rainflower-elevation.png"
+      },
+      {
+        "cap": "day",
+        "url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786294679103-rainflower-day.png",
+        "kind": "image",
+        "name": "rainflower-day.png"
+      },
+      {
+        "cap": "Dusk",
+        "url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786294689568-rainflower-dusk.png",
+        "kind": "image",
+        "name": "rainflower-dusk.png"
+      },
+      {
+        "cap": "Aerial",
+        "url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786294702614-rainflower-aerial.png",
+        "kind": "image",
+        "name": "rainflower-aerial.png"
+      }
+    ],
+    "configLabel": "3 & 4 BHK",
+    "modelUrl": "https://surbhi-infotech.s3.ap-south-1.amazonaws.com/Rain_Flower/rain_flower_3bhk-1340/index.html"
   },
   {
     "slug": "trident",
@@ -39,6 +87,7 @@
       "3 BHK"
     ],
     "rera": "P52200077919",
+    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786256868764-tridantreraqr.jpeg",
     "towers": "G+11",
     "possession": "Dec 2027",
     "line": "2 & 3 BHK · Possession Dec 2027",
@@ -50,6 +99,9 @@
         "label": "2nd–9th floor"
       }
     ],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "2 & 3 BHK"
   },
   {
@@ -74,6 +126,9 @@
         "label": "2nd–7th floor"
       }
     ],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "2 & 3 BHK"
   },
   {
@@ -97,6 +152,9 @@
         "label": "Typical floor"
       }
     ],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "3 BHK"
   },
   {
@@ -109,7 +167,7 @@
       "2 BHK",
       "3 BHK"
     ],
-    "rera": "To confirm",
+    "rera": "P52200077943",
     "towers": "G+11",
     "possession": "To confirm",
     "line": "2 & 3 BHK · Brochure available",
@@ -121,6 +179,9 @@
         "label": "Typical floor"
       }
     ],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "2 & 3 BHK"
   },
   {
@@ -140,6 +201,9 @@
     "img": "/assets/bluebell-street.png",
     "coords": "19.102931,74.729069",
     "plans": [],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "2 & 3 BHK"
   },
   {
@@ -158,6 +222,9 @@
     "line": "1 & 2 BHK · Possession Jun 2027",
     "img": "/assets/sierra-street.png",
     "plans": [],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "1 & 2 BHK"
   },
   {
@@ -171,51 +238,17 @@
       "Office"
     ],
     "rera": "P52200052558",
+    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786257097976-bluestoneqr.jpeg",
     "towers": "G+4",
     "possession": "Sep 2027",
     "line": "Shops & offices · Possession Sep 2027",
     "img": "/assets/trident-day.png",
     "coords": "19.1043047,74.7347696",
     "plans": [],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "Shops & offices"
-  },
-  {
-    "slug": "the-courtyard-i",
-    "name": "The Courtyard Phase I",
-    "locality": "Savedi",
-    "status": "Completed",
-    "type": "Residential",
-    "configs": [
-      "2 BHK",
-      "3 BHK"
-    ],
-    "rera": "P52200000247",
-    "towers": "G+7",
-    "possession": "Handed over",
-    "line": "2 & 3 BHK · Handed over",
-    "img": "/assets/bluebell-aerial.png",
-    "coords": "19.1079819,74.7410736",
-    "plans": [],
-    "configLabel": "2 & 3 BHK"
-  },
-  {
-    "slug": "siya-ram-residency",
-    "name": "Siya Ram Residency",
-    "locality": "Nalegaon",
-    "status": "Completed",
-    "type": "Residential",
-    "configs": [
-      "1 BHK",
-      "2 BHK"
-    ],
-    "rera": "P52200018653",
-    "towers": "G+4",
-    "possession": "Handed over",
-    "line": "1 & 2 BHK · Handed over",
-    "img": "/assets/rainflower-day.png",
-    "coords": "19.1153991,74.7234548",
-    "plans": [],
-    "configLabel": "1 & 2 BHK"
   },
   {
     "slug": "utkarsha-iii",
@@ -233,45 +266,10 @@
     "img": "/assets/trident-aerial.png",
     "coords": "19.1100151,74.7256595",
     "plans": [],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "2 BHK"
-  },
-  {
-    "slug": "amrutkalash",
-    "name": "Amrutkalash",
-    "locality": "Borude Mala",
-    "status": "Completed",
-    "type": "Residential",
-    "configs": [
-      "1 BHK",
-      "2 BHK"
-    ],
-    "rera": "To confirm",
-    "towers": "G+4",
-    "possession": "Handed over",
-    "line": "1 & 2 BHK · Handed over",
-    "img": "/assets/sierra-aerial-night.png",
-    "coords": "19.1101138,74.7271701",
-    "plans": [],
-    "configLabel": "1 & 2 BHK"
-  },
-  {
-    "slug": "anand-enclave",
-    "name": "Anand Enclave",
-    "locality": "Bhistabag",
-    "status": "Completed",
-    "type": "Mixed-Use",
-    "configs": [
-      "2 BHK",
-      "Shop"
-    ],
-    "rera": "To confirm",
-    "towers": "G+4",
-    "possession": "Handed over",
-    "line": "2 BHK & shops · Handed over",
-    "img": "/assets/rainflower-aerial.png",
-    "coords": "19.1100382,74.7310585",
-    "plans": [],
-    "configLabel": "2 BHK & shops"
   },
   {
     "slug": "magnolia",
@@ -289,6 +287,9 @@
     "img": "/assets/snowbell-elevation.png",
     "coords": "19.1242637,74.7404393",
     "plans": [],
+    "amenities": [],
+    "videos": [],
+    "media": [],
     "configLabel": "3 BHK"
   }
 ]
