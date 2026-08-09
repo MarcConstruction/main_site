@@ -15,13 +15,11 @@
 import projects from "../content/projects.json";
 import testimonials from "../content/testimonials.json";
 import eras from "../content/eras.json";
-import walkthroughs from "../content/walkthroughs.json";
 import site from "../content/site.json";
 
 export const PROJECTS = projects;
 export const TESTIMONIALS = testimonials;
 export const ERAS = eras;
-export const WALKTHROUGHS = walkthroughs;
 
 export const bySlug = (slug) => PROJECTS.find((p) => p.slug === slug);
 

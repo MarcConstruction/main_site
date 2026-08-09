@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome.jsx";
-import { PROJECTS, bySlug, WALKTHROUGHS } from "../data/projects.js";
+import { PROJECTS, bySlug } from "../data/projects.js";
 import { card } from "../lib/img.js";
 
 /* Defaults, used only where a project has none of its own. They describe how
@@ -159,11 +159,12 @@ export default function ProjectDetail() {
 
   if (!p) return null;
 
-  /* A project's own films win; the shared set stands in for the ones that
-     have none, which is every project until Marc adds them. */
-  const vids = p.videos?.length ? p.videos : WALKTHROUGHS;
-  const v = vids[Math.min(vid, vids.length - 1)];
-  const videoId = youtubeId(v.url);
+  /* Only this project's own films, same rule as the gallery. The three shared
+     walkthroughs were generic interiors shown on every page, which invited a
+     buyer to take them for the flat they were reading about. */
+  const vids = p.videos || [];
+  const v = vids.length ? vids[Math.min(vid, vids.length - 1)] : null;
+  const videoId = v ? youtubeId(v.url) : null;
   const plans = p.plans || [];
   /* A project's own specs and amenities win; the shared defaults fill in for
      the ones nobody has written yet. */
@@ -260,7 +261,10 @@ export default function ProjectDetail() {
         )}
 
         <section className="wrap sec">
-          <div className="detail-split">
+          {/* Without films this collapses to a single column rather than
+              leaving half the split empty. */}
+          <div className={vids.length ? "detail-split" : undefined}>
+            {vids.length > 0 && (
             <div>
               <div className="sec-head">
                 <span className="mono kicker">02</span><h2>Video walkthroughs</h2>
@@ -305,6 +309,7 @@ export default function ProjectDetail() {
                 />
               )}
             </div>
+            )}
 
             <div>
               <div className="sec-head"><span className="mono kicker">03</span><h2>Progress</h2></div>
