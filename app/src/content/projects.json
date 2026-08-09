@@ -10,7 +10,6 @@
       "4 BHK"
     ],
     "rera": "PR1010002601300",
-    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786262560207-rainflowerqr.jpeg",
     "towers": "G+11",
     "possession": "To confirm",
     "line": "3 & 4 BHK · Walkthroughs available",
@@ -74,7 +73,8 @@
       }
     ],
     "configLabel": "3 & 4 BHK",
-    "modelUrl": "https://surbhi-infotech.s3.ap-south-1.amazonaws.com/Rain_Flower/rain_flower_3bhk-1340/index.html"
+    "modelUrl": "https://surbhi-infotech.s3.ap-south-1.amazonaws.com/Rain_Flower/rain_flower_3bhk-1340/index.html",
+    "qrUrl": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786262560207-rainflowerqr.jpeg"
   },
   {
     "slug": "trident",
@@ -87,7 +87,6 @@
       "3 BHK"
     ],
     "rera": "P52200077919",
-    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786256868764-tridantreraqr.jpeg",
     "towers": "G+11",
     "possession": "Dec 2027",
     "line": "2 & 3 BHK · Possession Dec 2027",
@@ -102,7 +101,8 @@
     "amenities": [],
     "videos": [],
     "media": [],
-    "configLabel": "2 & 3 BHK"
+    "configLabel": "2 & 3 BHK",
+    "qrUrl": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786256868764-tridantreraqr.jpeg"
   },
   {
     "slug": "bluebell",
@@ -238,7 +238,6 @@
       "Office"
     ],
     "rera": "P52200052558",
-    "qr_url": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786257097976-bluestoneqr.jpeg",
     "towers": "G+4",
     "possession": "Sep 2027",
     "line": "Shops & offices · Possession Sep 2027",
@@ -248,7 +247,8 @@
     "amenities": [],
     "videos": [],
     "media": [],
-    "configLabel": "Shops & offices"
+    "configLabel": "Shops & offices",
+    "qrUrl": "https://mgwmzxwznsdoccgqsvsc.supabase.co/storage/v1/object/public/project-media/1786257097976-bluestoneqr.jpeg"
   },
   {
     "slug": "utkarsha-iii",

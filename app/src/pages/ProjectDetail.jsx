@@ -458,9 +458,16 @@ export default function ProjectDetail() {
                 <a className="btn btn-secondary btn-on-dark" href="/contact.html">Download RERA certificate</a>
               </div>
             </div>
-            <div className="blueprint rera-qr">
-              <img src="/assets/rera-qr-arabella.jpg" alt="MahaRERA QR code" />
-            </div>
+            {/* This project's own QR, uploaded on the Compliance tab.
+                It was hardcoded to Arabella's and drawn on all fourteen
+                pages — a buyer scanning it on Rainflower reached a different
+                project's registration, which is not a cosmetic mistake on a
+                statutory disclosure. No QR, no panel. */}
+            {p.qrUrl && (
+              <div className="blueprint rera-qr">
+                <img src={p.qrUrl} alt={`MahaRERA QR code for ${p.name}`} />
+              </div>
+            )}
           </div>
         </section>
       </main>
