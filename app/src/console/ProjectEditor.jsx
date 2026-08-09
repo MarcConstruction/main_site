@@ -15,7 +15,7 @@ const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
   line: "", img: "", coords: "", description: "", price_band: "", specs: "",
-  amenities: [], plans: [], media: [], published: false
+  amenities: [], plans: [], media: [], videos: [], model_url: "", published: false
 };
 
 const slugify = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -88,9 +88,20 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
       setSaving(false);
       return;
     }
+    /* Same "" problem as coords: the column refuses anything that is not
+       null or an https URL, and an untouched field sends "". */
+    const model_url = (p.model_url || "").trim() || null;
+    if (model_url && !/^https:\/\//.test(model_url)) {
+      setError("The 3D tour link must start with https:// — an http one is blocked by the browser as mixed content and the panel would just be blank.");
+      setSaving(false);
+      return;
+    }
+
     const body = {
       ...p,
       coords,
+      model_url,
+      videos: (p.videos || []).filter((vd) => vd.url?.trim()),
       slug: p.slug || slugify(p.name),
       published: publish ?? p.published
     };
@@ -402,6 +413,64 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   onClick={() => set({ plans: [...(p.plans || []), { label: "", img: "" }] })}>
                   + Add a floor plan
                 </button>
+
+                <span className="mono legend" style={{ marginTop: 30 }}>Video walkthroughs</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  YouTube links. Films stay on YouTube rather than in storage — a
+                  120 MB upload does not fit the plan, and YouTube streams better anyway.
+                </p>
+
+                {(p.videos || []).map((vd, i) => {
+                  const setVid = (patch) =>
+                    set({ videos: p.videos.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
+                  return (
+                    <div className="pair" key={i} style={{ alignItems: "end" }}>
+                      <div className="field">
+                        <label>Configuration</label>
+                        <input className="input" value={vd.label || ""} placeholder="2 BHK"
+                          onChange={(e) => setVid({ label: e.target.value })} />
+                      </div>
+                      <div className="field">
+                        <label>YouTube link</label>
+                        <input className="input" value={vd.url || ""} placeholder="https://www.youtube.com/watch?v=…"
+                          onChange={(e) => setVid({ url: e.target.value })} />
+                      </div>
+                      <div className="field">
+                        <label>Length</label>
+                        <input className="input" value={vd.len || ""} placeholder="03:41"
+                          onChange={(e) => setVid({ len: e.target.value })} />
+                      </div>
+                      <div className="field">
+                        <button className="btn btn-sm danger"
+                          onClick={() => set({ videos: p.videos.filter((_, j) => j !== i) })}>
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+                <button className="btn btn-sm"
+                  onClick={() => set({ videos: [...(p.videos || []), { label: "", url: "", len: "" }] })}>
+                  + Add a video
+                </button>
+
+                <span className="mono legend" style={{ marginTop: 30 }}>3D walkthrough</span>
+                <div className="field">
+                  <label htmlFor="f-model">Link to the 3D tour</label>
+                  <input className="input" id="f-model" value={p.model_url || ""}
+                    placeholder="https://…/index.html"
+                    onChange={(e) => set({ model_url: e.target.value })} />
+                  <span className="mono" style={{ display: "block", marginTop: 6 }}>
+                    Must start with https — the site is served over https and a plain
+                    http tour is blocked by the browser as mixed content. Leave empty
+                    and the 3D section is hidden rather than showing a dead button.
+                  </span>
+                </div>
+                {p.model_url && (
+                  <a className="btn btn-sm" href={p.model_url} target="_blank" rel="noopener noreferrer">
+                    Open the tour to check it
+                  </a>
+                )}
               </>
             )}
           </div>

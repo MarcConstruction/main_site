@@ -72,6 +72,7 @@ const Pending = ({ children }) => {
 export default function ProjectDetail() {
   const [p, setP] = useState(null);
   const [vid, setVid] = useState(0);
+  const [model, setModel] = useState(false);
   const [plan, setPlan] = useState(0);
   const [lb, setLb] = useState(-1);
 
@@ -103,7 +104,10 @@ export default function ProjectDetail() {
 
   if (!p) return null;
 
-  const v = WALKTHROUGHS[vid];
+  /* A project's own films win; the shared set stands in for the ones that
+     have none, which is every project until Marc adds them. */
+  const vids = p.videos?.length ? p.videos : WALKTHROUGHS;
+  const v = vids[Math.min(vid, vids.length - 1)];
   const plans = p.plans || [];
   /* A project's own specs and amenities win; the shared defaults fill in for
      the ones nobody has written yet. */
@@ -163,17 +167,40 @@ export default function ProjectDetail() {
           </div>
         </section>
 
-        <section className="wrap sec">
-          <div className="sec-head"><span className="mono kicker">01</span><h2>Walk the building in 3D</h2></div>
-          <div className="blueprint mediabox">
-            <div className="shot"><img src={card("/assets/rainflower-aerial.png")} alt={`${p.name} 3D model`} loading="lazy" /></div>
-            <div className="bar">
-              <button type="button" className="btn btn-primary btn-nav">Launch 3D model</button>
-              <span className="mono spacer">DRAG TO ROTATE · SCROLL TO ZOOM · GLB, 18 MB</span>
+        {/* Only shown when the project actually has a model. The button used
+            to be inert on every page, which promises something the site
+            cannot deliver. */}
+        {p.modelUrl && (
+          <section className="wrap sec">
+            <div className="sec-head"><span className="mono kicker">01</span><h2>Walk the building in 3D</h2></div>
+            <div className="blueprint mediabox">
+              {model ? (
+                /* Loaded on click, never on page load: these tours pull many
+                   megabytes of textures and would otherwise cost every visitor
+                   who never presses the button. */
+                <iframe className="shot model-frame" src={p.modelUrl}
+                  title={`${p.name} 3D walkthrough`} allow="fullscreen; xr-spatial-tracking"
+                  loading="lazy" />
+              ) : (
+                <div className="shot">
+                  <img src={card(p.img || "/assets/rainflower-aerial.png")}
+                    alt={`${p.name} 3D model`} loading="lazy" />
+                </div>
+              )}
+              <div className="bar">
+                {model ? (
+                  <a className="btn btn-secondary btn-nav" href={p.modelUrl}
+                    target="_blank" rel="noopener noreferrer">Open full screen</a>
+                ) : (
+                  <button type="button" className="btn btn-primary btn-nav"
+                    onClick={() => setModel(true)}>Launch 3D model</button>
+                )}
+                <span className="mono spacer">DRAG TO LOOK AROUND · SCROLL TO ZOOM</span>
+              </div>
             </div>
-          </div>
-          <span className="mono caption">ARTISTIC IMPRESSION; ACTUALS MAY VARY</span>
-        </section>
+            <span className="mono caption">ARTISTIC IMPRESSION; ACTUALS MAY VARY</span>
+          </section>
+        )}
 
         <section className="wrap sec">
           <div className="detail-split">
@@ -183,7 +210,7 @@ export default function ProjectDetail() {
                 <span className="note">One film per configuration.</span>
               </div>
               <div className="tabrow" role="tablist" aria-label="Walkthrough configuration">
-                {WALKTHROUGHS.map((w, i) => (
+                {vids.map((w, i) => (
                   <button key={w.label} type="button" className="tab" role="tab"
                     aria-selected={vid === i} onClick={() => setVid(i)}>
                     {w.label}
@@ -191,7 +218,9 @@ export default function ProjectDetail() {
                 ))}
               </div>
               <a className="blueprint video" href={v.url} target="_blank" rel="noopener noreferrer">
-                <div className="shot"><img src={card(v.img)} alt={`${p.name} ${v.label} walkthrough`} loading="lazy" /></div>
+                {/* A video added in the console may have no poster of its own;
+                    the project's cover stands in rather than a broken image. */}
+                <div className="shot"><img src={card(v.img || p.img)} alt={`${p.name} ${v.label} walkthrough`} loading="lazy" /></div>
                 <div className="play">
                   <span><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z" /></svg></span>
                 </div>
