@@ -181,5 +181,5 @@ create policy "staff delete project media"
 -- shows empty lists -- which is the safe direction to fail in.
 -- ==========================================================================
 insert into public.staff (email, name)
-values ('you@marcconstruction.in', 'Marc — Director')
+values ('rmk@marcconstruction.in', 'Marc — Director')
 on conflict (email) do nothing;

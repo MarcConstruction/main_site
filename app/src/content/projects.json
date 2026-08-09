@@ -10,7 +10,6 @@
       "3 BHK",
       "4 BHK"
     ],
-    "configLabel": "2, 3 & 4 BHK",
     "rera": "To confirm",
     "towers": "2 wings · G+11",
     "possession": "To confirm",
@@ -19,14 +18,15 @@
     "coords": "19.1223267,74.7473039",
     "plans": [
       {
-        "label": "1st floor",
-        "img": "/assets/plans/rainflower-floor-1.png"
+        "img": "/assets/plans/rainflower-floor-1.png",
+        "label": "1st floor"
       },
       {
-        "label": "2nd–11th floor",
-        "img": "/assets/plans/rainflower-floor-2-11.png"
+        "img": "/assets/plans/rainflower-floor-2-11.png",
+        "label": "2nd–11th floor"
       }
-    ]
+    ],
+    "configLabel": "2, 3 & 4 BHK"
   },
   {
     "slug": "trident",
@@ -38,7 +38,6 @@
       "2 BHK",
       "3 BHK"
     ],
-    "configLabel": "2 & 3 BHK",
     "rera": "P52200077919",
     "towers": "G+11",
     "possession": "Dec 2027",
@@ -47,10 +46,11 @@
     "coords": "19.1230232,74.7218829",
     "plans": [
       {
-        "label": "2nd–9th floor",
-        "img": "/assets/plans/trident-floor-2-9.png"
+        "img": "/assets/plans/trident-floor-2-9.png",
+        "label": "2nd–9th floor"
       }
-    ]
+    ],
+    "configLabel": "2 & 3 BHK"
   },
   {
     "slug": "bluebell",
@@ -62,7 +62,6 @@
       "2 BHK",
       "3 BHK"
     ],
-    "configLabel": "2 & 3 BHK",
     "rera": "To confirm",
     "towers": "G+11",
     "possession": "To confirm",
@@ -71,10 +70,11 @@
     "coords": "19.1140017,74.733846",
     "plans": [
       {
-        "label": "2nd–7th floor",
-        "img": "/assets/plans/bluebell-floor-2-7.png"
+        "img": "/assets/plans/bluebell-floor-2-7.png",
+        "label": "2nd–7th floor"
       }
-    ]
+    ],
+    "configLabel": "2 & 3 BHK"
   },
   {
     "slug": "sierra",
@@ -85,7 +85,6 @@
     "configs": [
       "3 BHK"
     ],
-    "configLabel": "3 BHK",
     "rera": "To confirm",
     "towers": "G+11",
     "possession": "To confirm",
@@ -94,10 +93,11 @@
     "coords": "19.1241512,74.7399494",
     "plans": [
       {
-        "label": "Typical floor",
-        "img": "/assets/plans/sierra-floor-typical.png"
+        "img": "/assets/plans/sierra-floor-typical.png",
+        "label": "Typical floor"
       }
-    ]
+    ],
+    "configLabel": "3 BHK"
   },
   {
     "slug": "snowbell",
@@ -109,7 +109,6 @@
       "2 BHK",
       "3 BHK"
     ],
-    "configLabel": "2 & 3 BHK",
     "rera": "To confirm",
     "towers": "G+11",
     "possession": "To confirm",
@@ -118,10 +117,11 @@
     "coords": "19.1237911,74.7403149",
     "plans": [
       {
-        "label": "Typical floor",
-        "img": "/assets/plans/snowbell-floor-typical.png"
+        "img": "/assets/plans/snowbell-floor-typical.png",
+        "label": "Typical floor"
       }
-    ]
+    ],
+    "configLabel": "2 & 3 BHK"
   },
   {
     "slug": "arabella",
@@ -133,13 +133,14 @@
       "2 BHK",
       "3 BHK"
     ],
-    "configLabel": "2 & 3 BHK",
     "rera": "P52200048057",
     "towers": "G+11",
     "possession": "Mar 2027",
     "line": "2 & 3 BHK · Possession Mar 2027",
     "img": "/assets/bluebell-street.png",
-    "coords": "19.102931,74.729069"
+    "coords": "19.102931,74.729069",
+    "plans": [],
+    "configLabel": "2 & 3 BHK"
   },
   {
     "slug": "abhiram",
@@ -151,12 +152,13 @@
       "1 BHK",
       "2 BHK"
     ],
-    "configLabel": "1 & 2 BHK",
     "rera": "P52200049407",
     "towers": "G+7",
     "possession": "Jun 2027",
     "line": "1 & 2 BHK · Possession Jun 2027",
-    "img": "/assets/sierra-street.png"
+    "img": "/assets/sierra-street.png",
+    "plans": [],
+    "configLabel": "1 & 2 BHK"
   },
   {
     "slug": "bluestone",
@@ -168,13 +170,14 @@
       "Shop",
       "Office"
     ],
-    "configLabel": "Shops & offices",
     "rera": "P52200052558",
     "towers": "G+4",
     "possession": "Sep 2027",
     "line": "Shops & offices · Possession Sep 2027",
     "img": "/assets/trident-day.png",
-    "coords": "19.1043047,74.7347696"
+    "coords": "19.1043047,74.7347696",
+    "plans": [],
+    "configLabel": "Shops & offices"
   },
   {
     "slug": "the-courtyard-i",
@@ -186,13 +189,14 @@
       "2 BHK",
       "3 BHK"
     ],
-    "configLabel": "2 & 3 BHK",
     "rera": "P52200000247",
     "towers": "G+7",
     "possession": "Handed over",
     "line": "2 & 3 BHK · Handed over",
     "img": "/assets/bluebell-aerial.png",
-    "coords": "19.1079819,74.7410736"
+    "coords": "19.1079819,74.7410736",
+    "plans": [],
+    "configLabel": "2 & 3 BHK"
   },
   {
     "slug": "siya-ram-residency",
@@ -204,13 +208,14 @@
       "1 BHK",
       "2 BHK"
     ],
-    "configLabel": "1 & 2 BHK",
     "rera": "P52200018653",
     "towers": "G+4",
     "possession": "Handed over",
     "line": "1 & 2 BHK · Handed over",
     "img": "/assets/rainflower-day.png",
-    "coords": "19.1153991,74.7234548"
+    "coords": "19.1153991,74.7234548",
+    "plans": [],
+    "configLabel": "1 & 2 BHK"
   },
   {
     "slug": "utkarsha-iii",
@@ -221,13 +226,14 @@
     "configs": [
       "2 BHK"
     ],
-    "configLabel": "2 BHK",
     "rera": "To confirm",
     "towers": "G+4",
     "possession": "Handed over",
     "line": "2 BHK · Handed over",
     "img": "/assets/trident-aerial.png",
-    "coords": "19.1100151,74.7256595"
+    "coords": "19.1100151,74.7256595",
+    "plans": [],
+    "configLabel": "2 BHK"
   },
   {
     "slug": "amrutkalash",
@@ -239,13 +245,14 @@
       "1 BHK",
       "2 BHK"
     ],
-    "configLabel": "1 & 2 BHK",
     "rera": "To confirm",
     "towers": "G+4",
     "possession": "Handed over",
     "line": "1 & 2 BHK · Handed over",
     "img": "/assets/sierra-aerial-night.png",
-    "coords": "19.1101138,74.7271701"
+    "coords": "19.1101138,74.7271701",
+    "plans": [],
+    "configLabel": "1 & 2 BHK"
   },
   {
     "slug": "anand-enclave",
@@ -257,13 +264,14 @@
       "2 BHK",
       "Shop"
     ],
-    "configLabel": "2 BHK & shops",
     "rera": "To confirm",
     "towers": "G+4",
     "possession": "Handed over",
     "line": "2 BHK & shops · Handed over",
     "img": "/assets/rainflower-aerial.png",
-    "coords": "19.1100382,74.7310585"
+    "coords": "19.1100382,74.7310585",
+    "plans": [],
+    "configLabel": "2 BHK & shops"
   },
   {
     "slug": "magnolia",
@@ -274,12 +282,13 @@
     "configs": [
       "3 BHK"
     ],
-    "configLabel": "3 BHK",
     "rera": "P52200028201",
     "towers": "G+7",
     "possession": "Handed over",
     "line": "3 BHK · Handed over",
     "img": "/assets/snowbell-elevation.png",
-    "coords": "19.1242637,74.7404393"
+    "coords": "19.1242637,74.7404393",
+    "plans": [],
+    "configLabel": "3 BHK"
   }
 ]
