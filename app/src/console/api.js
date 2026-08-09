@@ -91,7 +91,9 @@ export function upload(file, onProgress) {
     xhr.open("POST", `${SB_URL}/storage/v1/object/project-media/${path}`);
     xhr.setRequestHeader("apikey", SB_KEY);
     xhr.setRequestHeader("Authorization", `Bearer ${session.token()}`);
-    xhr.setRequestHeader("x-upsert", "true");
+    /* No x-upsert. It made storage evaluate the UPDATE policy as well as
+       INSERT, which is a second way to be rejected, and the filename above
+       carries a timestamp so nothing is ever overwritten anyway. */
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) onProgress?.(Math.round((e.loaded / e.total) * 100));
