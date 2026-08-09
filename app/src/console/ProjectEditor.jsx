@@ -12,7 +12,7 @@ const CONFIGS = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Shop", "Office"];
 const AMENITIES = ["Lifts", "Power backup", "CCTV", "Landscaped garden", "Play area", "Clubhouse", "Covered parking"];
 
 const BLANK = {
-  slug: "", name: "", locality: LOCALITIES[0], status: "Ongoing", type: "Residential",
+  slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
   line: "", img: "", coords: "", description: "", price_band: "", specs: "",
   amenities: [], plans: [], media: [], published: false
@@ -72,6 +72,15 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
        pair, rather than rejecting a paste that plainly contains the answer.
        An untouched field is "", which must become null -- the column takes
        null or "lat,lng" and nothing in between. */
+    /* locality is NOT NULL in the database, and "" satisfies that while
+       rendering as a gap on the site. Catch it here with a sentence rather
+       than shipping a project labelled with nothing. */
+    if (!p.locality.trim()) {
+      setError("Give the project a locality or road — it appears on the card, the detail page and the map.");
+      setSaving(false);
+      return;
+    }
+
     const found = String(p.coords || "").match(/-?\d+(?:\.\d+)?/g);
     const coords = found && found.length >= 2 ? `${found[0]},${found[1]}` : null;
     if (p.coords?.trim() && !coords) {
