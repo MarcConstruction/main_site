@@ -9,7 +9,51 @@ const SEED_LOCALITIES = ["Ahilyanagar", "Savedi", "Nalegaon", "Bhistabag", "Tara
 const STATUSES = ["Ongoing", "Completed", "Upcoming"];
 const TYPES = ["Residential", "Commercial", "Mixed-Use"];
 const CONFIGS = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Shop", "Office"];
-const AMENITIES = ["Lifts", "Power backup", "CCTV", "Landscaped garden", "Play area", "Clubhouse", "Covered parking"];
+/* Offered on every project. Not a closed set — anything typed in is kept and
+   appears alongside these next time. */
+const AMENITIES = [
+  "Two automatic lifts per wing",
+  "Generator power backup, common areas & lifts",
+  "Landscaped garden & walking loop",
+  "Children's play area with soft flooring",
+  "CCTV surveillance, entry gate & lobbies",
+  "Covered parking, visitor bays",
+  "Community hall & society office",
+  "Rainwater harvesting"
+];
+
+/* The same seven the project page falls back to. Offered as a starting point
+   so the structure is right and only the wording needs attention. */
+const STANDARD_SPECS = [
+  { k: "STRUCTURE", v: "RCC framed, earthquake-resistant design to IS 1893" },
+  { k: "FLOORING", v: "800×800 vitrified tiles; anti-skid in wet areas" },
+  { k: "KITCHEN", v: "Granite platform, stainless sink, glazed dado" },
+  { k: "DOORS", v: "Teak-finish main door; flush internal doors" },
+  { k: "WINDOWS", v: "Three-track powder-coated aluminium with mosquito net" },
+  { k: "ELECTRICAL", v: "Concealed copper wiring, modular switches, AC points" },
+  { k: "WATER", v: "Underground + overhead tanks, solar water heating provision" }
+];
+
+/* specs stays a single text column: the site already parses "Label: value"
+   per line, so editing it as rows here needs no migration and no second
+   source of truth. */
+const parseSpecRows = (text) =>
+  String(text || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const at = line.indexOf(":");
+      return at > 0
+        ? { k: line.slice(0, at).trim(), v: line.slice(at + 1).trim() }
+        : { k: "", v: line };
+    });
+
+const serialiseSpecs = (rows) =>
+  rows
+    .filter((r) => r.k.trim() || r.v.trim())
+    .map((r) => (r.k.trim() ? `${r.k.trim()}: ${r.v.trim()}` : r.v.trim()))
+    .join("\n");
 
 const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
@@ -37,6 +81,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const [over, setOver] = useState(false);
   const [localities, setLocalities] = useState(SEED_LOCALITIES);
   const [planBusy, setPlanBusy] = useState(-1);
+  const [newAmenity, setNewAmenity] = useState("");
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -62,6 +107,21 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const set = (patch) => setP((cur) => ({ ...cur, ...patch }));
   const toggleIn = (key, value) =>
     set({ [key]: p[key].includes(value) ? p[key].filter((v) => v !== value) : [...p[key], value] });
+
+  /* Rows are derived from the stored text on every render rather than held
+     as their own state, so the two cannot drift apart. */
+  const specRows = parseSpecRows(p.specs);
+  const writeSpecs = (rows) => set({ specs: serialiseSpecs(rows) });
+
+  /* Whatever has been chosen appears among the offered chips, so a custom
+     amenity is not invisible the next time this project is opened. */
+  const amenityChoices = [...new Set([...AMENITIES, ...(p.amenities || [])])];
+  const addAmenity = () => {
+    const a = newAmenity.trim();
+    if (!a) return;
+    if (!p.amenities.includes(a)) set({ amenities: [...p.amenities, a] });
+    setNewAmenity("");
+  };
 
   /* The two things MahaRERA requires on a listing. Publish stays disabled
      until both are present — the database enforces the number, this also
@@ -207,7 +267,8 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
         {error && <p className="err" role="alert">{error}</p>}
         {note && <p className="ok" role="status">{note}</p>}
 
-        <div className="edit-cols">
+        {/* Two columns only where there is a second column to show. */}
+        <div className={tab === "Media" ? "edit-cols" : undefined}>
           <div>
             {tab === "Details" && (
               <>
@@ -313,21 +374,59 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
             {tab === "Specifications" && (
               <>
-                <span className="mono legend">Specifications &amp; amenities</span>
-                <div className="field">
-                  <label htmlFor="f-specs">Specifications (one per line)</label>
-                  <textarea className="input" id="f-specs" style={{ minHeight: 160 }}
-                    value={p.specs || ""} onChange={(e) => set({ specs: e.target.value })}
-                    placeholder={"RCC framed structure\nVitrified tile flooring\nGranite kitchen platform"} />
-                </div>
-                <div className="field">
-                  <label>Amenities</label>
-                  <div className="chips">
-                    {AMENITIES.map((a) => (
-                      <button key={a} aria-pressed={p.amenities.includes(a)}
-                        onClick={() => toggleIn("amenities", a)}>{a}</button>
-                    ))}
+                <span className="mono legend">Specifications</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  Each row is a labelled line on the project page — the label on the
+                  left, the detail on the right. Leave a label blank for a plain line.
+                </p>
+
+                {specRows.map((row, i) => (
+                  <div className="spec-row" key={i}>
+                    <input className="input" value={row.k} placeholder="STRUCTURE"
+                      aria-label={`Specification ${i + 1} label`}
+                      onChange={(e) => writeSpecs(specRows.map((r, j) => j === i ? { ...r, k: e.target.value } : r))} />
+                    <input className="input" value={row.v} placeholder="RCC framed, earthquake-resistant design to IS 1893"
+                      aria-label={`Specification ${i + 1} detail`}
+                      onChange={(e) => writeSpecs(specRows.map((r, j) => j === i ? { ...r, v: e.target.value } : r))} />
+                    <button className="btn btn-sm danger" title="Remove"
+                      onClick={() => writeSpecs(specRows.filter((_, j) => j !== i))}>Remove</button>
                   </div>
+                ))}
+
+                <div className="plan-actions" style={{ marginTop: 12 }}>
+                  <button className="btn btn-sm"
+                    onClick={() => writeSpecs([...specRows, { k: "", v: "" }])}>
+                    + Add a specification
+                  </button>
+                  {specRows.length === 0 && (
+                    /* Without this the tab is an empty box that says nothing
+                       about what the page expects. One click gives the standard
+                       seven, which are then edited rather than invented. */
+                    <button className="btn btn-sm" onClick={() => writeSpecs(STANDARD_SPECS)}>
+                      Fill with Marc&rsquo;s standard specifications
+                    </button>
+                  )}
+                </div>
+
+                <span className="mono legend" style={{ marginTop: 30 }}>Amenities</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  The common ones are offered on every project. Tick what applies and
+                  add anything particular to this building.
+                </p>
+                <div className="chips">
+                  {amenityChoices.map((a) => (
+                    <button key={a} aria-pressed={p.amenities.includes(a)}
+                      onClick={() => toggleIn("amenities", a)}>{a}</button>
+                  ))}
+                </div>
+                <div className="add-row">
+                  <input className="input" value={newAmenity} placeholder="Add another amenity"
+                    aria-label="New amenity"
+                    onChange={(e) => setNewAmenity(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addAmenity(); } }} />
+                  <button className="btn btn-sm" onClick={addAmenity} disabled={!newAmenity.trim()}>
+                    Add
+                  </button>
                 </div>
               </>
             )}
@@ -507,7 +606,10 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
             )}
           </div>
 
-          {/* ---- media column, always visible ---- */}
+          {/* Uploads belong to the Media tab. Sitting beside Details and
+              Compliance, they made those screens look like they were about
+              files when they are not. */}
+          {tab === "Media" && (
           <div>
             <span className="mono legend">Media</span>
             <div className={`drop${over ? " over" : ""}`}
@@ -605,6 +707,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
               </>
             )}
           </div>
+          )}
         </div>
       </div>
     </>

@@ -272,6 +272,12 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
 .legend { display: block; margin: 4px 0 16px; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+/* Label / detail / remove, mirroring the row the project page draws */
+.spec-row { display: grid; grid-template-columns: 190px 1fr auto; gap: 10px; margin-bottom: 10px; align-items: center; }
+.spec-row .input { padding: 9px 12px; }
+.add-row { display: flex; gap: 9px; margin-top: 12px; max-width: 520px; }
+@media (max-width: 760px) { .spec-row { grid-template-columns: 1fr; } }
+
 .chips { display: flex; flex-wrap: wrap; gap: 9px; }
 .chips button {
   border: 1px solid var(--line); background: var(--panel); color: var(--text);
