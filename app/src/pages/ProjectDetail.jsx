@@ -43,6 +43,37 @@ const DEFAULT_SPECS = [
   ["WATER", "Underground + overhead tanks, solar water heating provision"]
 ];
 
+/* YouTube hands out four shapes of link and staff will paste whichever the
+   browser gave them: watch?v=, youtu.be/, /embed/, /shorts/. Pull the id out
+   of any of them; anything unrecognised keeps the old outbound link rather
+   than rendering a dead player. */
+const youtubeId = (url) =>
+  String(url || "").match(
+    /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+  )?.[1] ?? null;
+
+/* The poster, play button and caption bar, as either a <button> that starts
+   the embed or an <a> out to YouTube when the link cannot be parsed. Same
+   markup either way so the two paths cannot drift apart visually. */
+function VideoCover({ as: Tag, href, onClick, poster, label, len, caption }) {
+  return (
+    <Tag className="blueprint video" href={href} onClick={onClick}
+      type={Tag === "button" ? "button" : undefined}
+      target={Tag === "a" ? "_blank" : undefined}
+      rel={Tag === "a" ? "noopener noreferrer" : undefined}>
+      <div className="shot"><img src={poster} alt={label} loading="lazy" /></div>
+      <div className="play">
+        <span><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z" /></svg></span>
+      </div>
+      <div className="bar">
+        <span className="mono">{len}</span>
+        <span className="track"><i /></span>
+        <span className="mono">{caption}</span>
+      </div>
+    </Tag>
+  );
+}
+
 const DEFAULT_AMENITIES = [
   "Two automatic lifts per wing",
   "Generator power backup, common areas & lifts",
@@ -73,6 +104,7 @@ export default function ProjectDetail() {
   const [p, setP] = useState(null);
   const [vid, setVid] = useState(0);
   const [model, setModel] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [plan, setPlan] = useState(0);
   const [lb, setLb] = useState(-1);
 
@@ -108,6 +140,7 @@ export default function ProjectDetail() {
      have none, which is every project until Marc adds them. */
   const vids = p.videos?.length ? p.videos : WALKTHROUGHS;
   const v = vids[Math.min(vid, vids.length - 1)];
+  const videoId = youtubeId(v.url);
   const plans = p.plans || [];
   /* A project's own specs and amenities win; the shared defaults fill in for
      the ones nobody has written yet. */
@@ -212,24 +245,41 @@ export default function ProjectDetail() {
               <div className="tabrow" role="tablist" aria-label="Walkthrough configuration">
                 {vids.map((w, i) => (
                   <button key={w.label} type="button" className="tab" role="tab"
-                    aria-selected={vid === i} onClick={() => setVid(i)}>
+                    aria-selected={vid === i}
+                    /* Stop playing when the configuration changes, or the 2 BHK
+                       film would keep running under the 3 BHK tab. */
+                    onClick={() => { setVid(i); setPlaying(false); }}>
                     {w.label}
                   </button>
                 ))}
               </div>
-              <a className="blueprint video" href={v.url} target="_blank" rel="noopener noreferrer">
-                {/* A video added in the console may have no poster of its own;
-                    the project's cover stands in rather than a broken image. */}
-                <div className="shot"><img src={card(v.img || p.img)} alt={`${p.name} ${v.label} walkthrough`} loading="lazy" /></div>
-                <div className="play">
-                  <span><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z" /></svg></span>
+              {/* Plays in place rather than sending the visitor to YouTube,
+                  where the related-video wall is full of other builders.
+
+                  The iframe is only created on click. YouTube's embed pulls
+                  roughly half a megabyte of player before anyone presses play,
+                  and this page already carries a 3D tour and a gallery. Until
+                  then it is a poster and a button — which is also why no
+                  YouTube cookie is set for visitors who never watch. */}
+              {playing && videoId ? (
+                <div className="blueprint video">
+                  <iframe className="video-frame"
+                    src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+                    title={`${p.name} ${v.label} walkthrough`}
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowFullScreen />
                 </div>
-                <div className="bar">
-                  <span className="mono">{v.len}</span>
-                  <span className="track"><i /></span>
-                  <span className="mono">{v.label} WALKTHROUGH · YOUTUBE</span>
-                </div>
-              </a>
+              ) : (
+                <VideoCover
+                  as={videoId ? "button" : "a"}
+                  href={videoId ? undefined : v.url}
+                  onClick={videoId ? () => setPlaying(true) : undefined}
+                  poster={card(v.img || p.img)}
+                  label={`${p.name} ${v.label} walkthrough`}
+                  len={v.len}
+                  caption={`${v.label} WALKTHROUGH · YOUTUBE`}
+                />
+              )}
             </div>
 
             <div>
