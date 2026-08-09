@@ -114,9 +114,43 @@ export async function db(path, { method = "GET", body, headers = {}, raw = false
   return res.status === 204 ? null : res.json();
 }
 
+/* Shrink an image before it leaves the browser.
+
+   thumbs.mjs generates resized copies of everything in public/assets, which
+   is why the masthead went from 28.6 MB to 630 KB. It cannot touch files in
+   Supabase Storage — different host, and the build never sees them. Without
+   this, a phone photograph straight off a site visit would be served at full
+   size into a gallery grid and quietly undo that work.
+
+   1800px matches the `hero` tier, the widest the site ever draws. Anything
+   already smaller, or that fails to convert, is sent untouched: a slightly
+   large image beats a failed upload. */
+async function shrink(file, max = 1800, quality = 0.82) {
+  if (!/^image\//.test(file.type) || /svg/i.test(file.type)) return file;
+
+  try {
+    const bmp = await createImageBitmap(file);
+    if (bmp.width <= max) { bmp.close?.(); return file; }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = max;
+    canvas.height = Math.round(bmp.height * (max / bmp.width));
+    canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+    bmp.close?.();
+
+    const blob = await new Promise((res) => canvas.toBlob(res, "image/webp", quality));
+    if (!blob || blob.size >= file.size) return file;
+
+    return new File([blob], file.name.replace(/\.[a-z0-9]+$/i, ".webp"), { type: "image/webp" });
+  } catch {
+    return file;
+  }
+}
+
 /* Storage upload. XMLHttpRequest rather than fetch purely because fetch cannot
    report upload progress, and the editor shows a percentage per file. */
-export async function upload(file, onProgress) {
+export async function upload(original, onProgress) {
+  const file = await shrink(original);
   const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
   const path = `${Date.now()}-${safe}`;
   /* Storage authenticates the JWT itself. An expired one is treated as

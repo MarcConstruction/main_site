@@ -21,7 +21,8 @@ const OUT = new URL("../src/content/projects.json", import.meta.url);
 const COLUMNS = [
   "slug", "name", "locality", "status", "type", "configs", "config_label",
   "rera", "qr_url", "towers", "possession", "line", "img", "coords", "plans",
-  "description", "price_band", "specs", "amenities", "videos", "model_url"
+  "description", "price_band", "specs", "amenities", "videos", "model_url",
+  "media"
 ].join(",");
 
 /* The committed projects.json is the fallback. A build that cannot reach
