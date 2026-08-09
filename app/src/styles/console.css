@@ -293,6 +293,20 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
 .files .bar i { display: block; height: 100%; background: var(--accent); }
 .files .grow { flex: 1; min-width: 0; }
 
+/* Floor plans: the sheet itself, not a path to it */
+.plan-row {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0; border-bottom: 1px solid var(--line-soft);
+}
+.plan-sheet {
+  flex: 0 0 120px; aspect-ratio: 4/3; border: 1px solid var(--line);
+  background: var(--panel); display: grid; place-items: center; overflow: hidden;
+}
+.plan-sheet img { width: 100%; height: 100%; object-fit: cover; }
+.plan-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn.danger { color: var(--danger); border-color: var(--line); }
+.btn.danger:hover { background: #fbeceb; border-color: var(--danger); }
+
 .covers { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; margin-top: 14px; }
 .cover { border: 1px dashed var(--faint); aspect-ratio: 4/3; display: grid; place-items: center; position: relative; background: var(--panel); overflow: hidden; }
 .cover img { width: 100%; height: 100%; object-fit: cover; }

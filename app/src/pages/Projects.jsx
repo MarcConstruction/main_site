@@ -4,11 +4,18 @@ import { PROJECTS } from "../data/projects.js";
 import { card } from "../lib/img.js";
 import FoldText from "../components/FoldText.jsx";
 
+/* Localities are read out of the content, not listed here. The console lets
+   Marc type a new one — a road, a new pocket of the city — and a hardcoded
+   list would quietly leave those projects unreachable by filter. Status,
+   type and config stay fixed because they are closed sets the console
+   offers as choices. */
+const localities = [...new Set(PROJECTS.map((p) => p.locality).filter(Boolean))].sort();
+
 const FACETS = [
   ["status", "STATUS", ["All", "Ongoing", "Completed", "Upcoming"]],
   ["type", "TYPE", ["All", "Residential", "Commercial", "Mixed-Use"]],
   ["config", "CONFIG", ["All", "1 BHK", "2 BHK", "3 BHK", "Shop", "Office"]],
-  ["locality", "LOCALITY", ["All", "Savedi", "Nalegaon", "Bhistabag", "Tarakpur", "Borude Mala"]]
+  ["locality", "LOCALITY", ["All", ...localities]]
 ];
 
 const CLEAR = { status: "All", type: "All", config: "All", locality: "All" };

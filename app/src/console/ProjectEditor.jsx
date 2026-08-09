@@ -3,7 +3,9 @@ import { db, upload, logActivity, triggerRebuild } from "./api.js";
 import { Back, Alert, Up, Box, Play, Doc, Pic } from "./Icons.jsx";
 
 const TABS = ["Details", "Media", "Specifications", "Compliance"];
-const LOCALITIES = ["Ahilyanagar", "Savedi", "Nalegaon", "Bhistabag", "Tarakpur", "Borude Mala"];
+/* Starting suggestions only — the field is free text and the list below is
+   merged with whatever is already in use. */
+const SEED_LOCALITIES = ["Ahilyanagar", "Savedi", "Nalegaon", "Bhistabag", "Tarakpur", "Borude Mala"];
 const STATUSES = ["Ongoing", "Completed", "Upcoming"];
 const TYPES = ["Residential", "Commercial", "Mixed-Use"];
 const CONFIGS = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Shop", "Office"];
@@ -27,6 +29,8 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const [saving, setSaving] = useState(false);
   const [queue, setQueue] = useState([]);      // in-flight uploads
   const [over, setOver] = useState(false);
+  const [localities, setLocalities] = useState(SEED_LOCALITIES);
+  const [planBusy, setPlanBusy] = useState(-1);
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -35,6 +39,16 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
       .then((r) => setP(r[0] ?? null))
       .catch((e) => setError(e.message));
   }, [id]);
+
+  /* Suggestions come from what is already in use, so the list grows as Marc
+     names new places instead of needing an edit here. */
+  useEffect(() => {
+    db("projects?select=locality")
+      .then((rows) => setLocalities(
+        [...new Set([...SEED_LOCALITIES, ...rows.map((r) => r.locality)].filter(Boolean))].sort()
+      ))
+      .catch(() => {});
+  }, []);
 
   if (error && !p) return <div className="view"><p className="err">{error}</p></div>;
   if (!p) return <div className="view"><p className="spinner">Loading…</p></div>;
@@ -179,11 +193,18 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                 </div>
                 <div className="pair">
                   <div className="field">
-                    <label htmlFor="f-loc">Locality</label>
-                    <select className="input" id="f-loc" value={p.locality}
-                      onChange={(e) => set({ locality: e.target.value })}>
-                      {LOCALITIES.map((l) => <option key={l}>{l}</option>)}
-                    </select>
+                    <label htmlFor="f-loc">Locality or road</label>
+                    {/* Free text with suggestions, not a fixed list. Marc knows
+                        the city better than any list I could write, and a new
+                        pocket or a road name should not need a code change.
+                        The public filter reads its options from the content
+                        for the same reason. */}
+                    <input className="input" id="f-loc" list="known-localities"
+                      value={p.locality} placeholder="Savedi, or Nagar–Manmad Road"
+                      onChange={(e) => set({ locality: e.target.value })} />
+                    <datalist id="known-localities">
+                      {localities.map((l) => <option key={l} value={l} />)}
+                    </datalist>
                   </div>
                   <div className="field">
                     <label htmlFor="f-type">Type</label>
@@ -317,20 +338,57 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
             {tab === "Media" && (
               <>
                 <span className="mono legend">Floor plans</span>
-                {(p.plans || []).map((pl, i) => (
-                  <div className="pair" key={i}>
-                    <div className="field">
-                      <label>Floor</label>
-                      <input className="input" value={pl.label}
-                        onChange={(e) => set({ plans: p.plans.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })} />
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  Whole-floor sheets from the brochure. Their area tables are printed on
+                  the drawing, which is why carpet areas are never retyped.
+                </p>
+
+                {(p.plans || []).map((pl, i) => {
+                  const setPlan = (patch) =>
+                    set({ plans: p.plans.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
+
+                  return (
+                    <div className="plan-row" key={i}>
+                      <div className="plan-sheet">
+                        {pl.img
+                          ? <img src={pl.img} alt={pl.label || "Floor plan"} />
+                          : <span className="mono">No sheet</span>}
+                      </div>
+
+                      <div className="grow">
+                        <div className="field">
+                          <label>Floor</label>
+                          <input className="input" value={pl.label} placeholder="2nd–11th floor"
+                            onChange={(e) => setPlan({ label: e.target.value })} />
+                        </div>
+
+                        {/* The sheet is uploaded, not a URL typed by hand. Asking
+                            for a path was the reason there was "no option for
+                            adding the actual plan". */}
+                        <div className="plan-actions">
+                          <button className="btn btn-sm" disabled={planBusy === i}
+                            onClick={() => document.getElementById(`plan-file-${i}`).click()}>
+                            {planBusy === i ? "Uploading…" : pl.img ? "Replace sheet" : "Upload sheet"}
+                          </button>
+                          <input id={`plan-file-${i}`} type="file" accept="image/*,application/pdf" hidden
+                            onChange={async (e) => {
+                              const f = e.target.files?.[0];
+                              if (!f) return;
+                              setPlanBusy(i); setError("");
+                              try { setPlan({ img: await upload(f) }); }
+                              catch (err) { setError(err.message); }
+                              finally { setPlanBusy(-1); }
+                            }} />
+                          <button className="btn btn-sm danger"
+                            onClick={() => set({ plans: p.plans.filter((_, j) => j !== i) })}>
+                            Remove floor
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="field">
-                      <label>Sheet</label>
-                      <input className="input" value={pl.img}
-                        onChange={(e) => set({ plans: p.plans.map((x, j) => j === i ? { ...x, img: e.target.value } : x) })} />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
+
                 <button className="btn btn-sm"
                   onClick={() => set({ plans: [...(p.plans || []), { label: "", img: "" }] })}>
                   + Add a floor plan
