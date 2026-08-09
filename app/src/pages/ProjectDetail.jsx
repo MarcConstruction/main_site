@@ -56,9 +56,13 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     const slug = new URLSearchParams(window.location.search).get("p");
-    const found = bySlug(slug) || PROJECTS[0];
+    /* PROJECTS can legitimately be empty — every project drafted in the
+       console publishes an empty portfolio. Reading .name off undefined threw
+       here and blanked the page, so fall back to nothing and let the guard
+       below render instead. */
+    const found = bySlug(slug) || PROJECTS[0] || null;
     setP(found);
-    document.title = `${found.name} · Marc Construction`;
+    if (found) document.title = `${found.name} · Marc Construction`;
   }, []);
 
   useEffect(() => {

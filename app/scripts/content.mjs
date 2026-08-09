@@ -40,8 +40,15 @@ const res = await fetch(
 if (!res.ok) keepExisting(`Supabase returned ${res.status} — ${await res.text()}`);
 
 const rows = await res.json();
-if (!Array.isArray(rows) || rows.length === 0) {
-  keepExisting("Supabase returned no published projects.");
+if (!Array.isArray(rows)) keepExisting("Supabase returned something that is not a list.");
+
+/* An empty list is an answer, not a failure. Treating it as one meant that
+   drafting every project could never reach the site: the build would quietly
+   keep the last file that had them all, and the console would look broken.
+   The real failure modes -- no credentials, network error, non-2xx -- are
+   caught above and still hold the last known content. */
+if (rows.length === 0) {
+  console.warn("\n  content.mjs: no published projects. Building an empty portfolio.\n");
 }
 
 /* Back to the site's camelCase, dropping nulls so the JSON stays as clean as
