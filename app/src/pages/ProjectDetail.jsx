@@ -166,6 +166,8 @@ export default function ProjectDetail() {
   const v = vids.length ? vids[Math.min(vid, vids.length - 1)] : null;
   const videoId = v ? youtubeId(v.url) : null;
   const plans = p.plans || [];
+  const sheet = plans[Math.min(plan, Math.max(plans.length - 1, 0))] || null;
+  const isPdfSheet = /\.pdf(\?|$)/i.test(sheet?.img || "");
   /* A project's own specs and amenities win; the shared defaults fill in for
      the ones nobody has written yet. */
   const ownSpecs = parseSpecs(p.specs);
@@ -366,12 +368,34 @@ export default function ProjectDetail() {
                   ))}
                 </div>
               )}
+              {/* A sheet can be a PDF, which stays sharp at any zoom — the
+                  point of a floor plan somebody pinches into. <object> renders
+                  it inline where the browser can, and falls through to its
+                  children where it cannot: iOS shows only the first page and
+                  some Android browsers download instead of displaying, so the
+                  link below is the reliable path, not a nicety. */}
               <figure className="blueprint plan-sheet">
-                <img src={plans[Math.min(plan, plans.length - 1)].img}
-                  alt={`${p.name}, ${plans[Math.min(plan, plans.length - 1)].label} plan`} />
+                {isPdfSheet ? (
+                  <object className="plan-pdf" data={sheet.img} type="application/pdf"
+                    aria-label={`${p.name}, ${sheet.label} plan`}>
+                    <div className="plan-fallback">
+                      <p>Your browser cannot display the plan here.</p>
+                      <a className="btn btn-primary" href={sheet.img}
+                        target="_blank" rel="noopener noreferrer">Open the {sheet.label} plan</a>
+                    </div>
+                  </object>
+                ) : (
+                  <img src={sheet.img} alt={`${p.name}, ${sheet.label} plan`} />
+                )}
               </figure>
+              <div className="plan-open">
+                <a className="btn btn-secondary" href={sheet.img}
+                  target="_blank" rel="noopener noreferrer">
+                  Open full size{isPdfSheet ? " (PDF)" : ""}
+                </a>
+              </div>
               <figcaption className="mono plan-note">
-                {plans[Math.min(plan, plans.length - 1)].label.toUpperCase()} · AREAS AS PRINTED ON THE SHEET · RERA CARPET
+                {sheet.label.toUpperCase()} · AREAS AS PRINTED ON THE SHEET · RERA CARPET
               </figcaption>
             </>
           ) : (

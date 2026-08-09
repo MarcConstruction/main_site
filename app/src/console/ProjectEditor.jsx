@@ -367,6 +367,10 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                 <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
                   Whole-floor sheets from the brochure. Their area tables are printed on
                   the drawing, which is why carpet areas are never retyped.
+                  <br />
+                  <strong>PDF is better than a photograph here</strong> — it stays sharp
+                  however far a buyer zooms in, and it is not shrunk on upload the way
+                  images are.
                 </p>
 
                 {(p.plans || []).map((pl, i) => {
@@ -375,10 +379,15 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
                   return (
                     <div className="plan-row" key={i}>
+                      {/* A PDF has no thumbnail an <img> can draw, so show
+                          the document icon rather than a broken image. */}
                       <div className="plan-sheet">
-                        {pl.img
-                          ? <img src={pl.img} alt={pl.label || "Floor plan"} />
-                          : <span className="mono">No sheet</span>}
+                        {!pl.img
+                          ? <span className="mono">No sheet</span>
+                          : /\.pdf(\?|$)/i.test(pl.img)
+                            ? <a href={pl.img} target="_blank" rel="noopener noreferrer"
+                                title="Open the PDF"><Doc /><span className="mono">PDF</span></a>
+                            : <img src={pl.img} alt={pl.label || "Floor plan"} />}
                       </div>
 
                       <div className="grow">
