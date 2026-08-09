@@ -62,43 +62,43 @@ render for a small slot. The masthead alone pulled **28.6 MB** before this; all
 through the CMS is resized without anyone running anything. `npm run thumbs`
 alone is only for regenerating them without a full build.
 
-## Admin (Decap CMS)
+## Owner console
 
-The admin panel is **Decap CMS**, served at `/admin/`. It is git-based: every
-save is a commit to this repo, so content keeps full history, no API keys ship
-to the browser, and the static build is untouched. No database, no server, and
-no hand-rolled authentication.
+`/console.html` — projects, enquiries and media, behind Supabase Auth. A sixth
+Vite entry in its own chunk, so a visitor to the marketing site downloads none
+of it. Source lives in `src/console/`.
 
-Auth is **Netlify Identity via Git Gateway** — no OAuth app to register, no
-client secret in the repo. `netlify.toml` and the Identity wiring are already in
-place; what remains needs your accounts:
+It replaced Decap CMS, which was removed. Decap is git-based, and once project
+content moved into Postgres the two would have fought: Decap writing
+`src/content/projects.json` while `scripts/content.mjs` overwrites that same
+file from Supabase on every build. Silent data loss, so Decap had to go rather
+than sit alongside.
 
-The repo is `github.com/MarcConstruction/main_site`, default branch `main` —
-which is what `branch` in `public/admin/config.yml` points at. What remains:
+| Screen | What it does |
+| --- | --- |
+| Dashboard | Counts, latest enquiries, activity feed, and what is blocking a project from going live |
+| Projects | Table with drag-to-reorder, live/draft switch per row, enquiry counts |
+| Project editor | Details / Media / Specifications / Compliance tabs, drag-drop upload with progress, cover picker |
+| Enquiries | Status workflow, search, month filter, Call and WhatsApp, CSV export |
 
-1. **Create the Netlify site** from that repo. `netlify.toml` already sets
-   base `app`, publish `dist`, and Node 22.
-2. **Enable Identity, then Git Gateway** in Site settings → Identity.
-3. **Set registration to invite-only** and invite the Marc staff by email.
-   Leaving it open lets anyone sign up and edit the site.
+**Publishing rebuilds the site.** Saving writes to Supabase; publishing also
+POSTs to `VITE_VERCEL_DEPLOY_HOOK`, which re-runs the build and therefore
+`content.mjs`. Without that variable set the console says so plainly instead
+of claiming the website updated.
 
-Until step 2, `/admin/` shows the login screen but cannot authenticate.
+Access is the `staff` table — `is_staff()` reads from it and every policy in
+`supabase/console.sql` reads from `is_staff()`. Add a colleague with one
+INSERT; there is no sign-up.
 
-`publish_mode: editorial_workflow` is on, so an edit becomes a pull request with
-a Publish step rather than committing straight to live.
+Two rules the database enforces rather than the UI, because a UI can be worked
+around: a published project must carry a MahaRERA value, and an enquiry's
+status must be one of the five the console offers. The QR code is *not* yet in
+that constraint — see the comment in `console.sql` for why, and the one line
+to add once every project has one.
 
-Collections map to the JSON in `src/content/`: Projects, Testimonials, About —
-the story, Walkthrough videos, and Contact & legal.
-
-Editors upload images straight through the CMS — `prebuild` regenerates every
-resized version on each deploy, so there is nothing for them to run.
-
-The one rule the field hints repeat: **MahaRERA values read exactly as the
+The rule the field hints repeat: **MahaRERA values read exactly as the
 authority has them.** `"To confirm"` and `"—"` are real states. Never invent a
 number.
-
-In `npm run dev`, Vite's HTML fallback swallows the bare `/admin/` path — use
-`/admin/index.html`. The production build serves `/admin/` correctly.
 
 ## Data
 

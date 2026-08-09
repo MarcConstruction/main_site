@@ -17,9 +17,10 @@ export default defineConfig({
         project: resolve(here, "project.html"),
         about: resolve(here, "about.html"),
         contact: resolve(here, "contact.html"),
-        // Internal: the enquiries list. Not linked from the site, noindexed in
-        // the page and again in vercel.json.
-        enquiries: resolve(here, "enquiries.html")
+        // Internal: the owner console. Not linked from the site, noindexed in
+        // the page and again in vercel.json. Its own chunk, so a visitor to
+        // the marketing site never downloads a byte of it.
+        console: resolve(here, "console.html")
       }
     }
   }
