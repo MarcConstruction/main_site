@@ -15,9 +15,13 @@ const SB_URL = process.env.VITE_SUPABASE_URL;
 const SB_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 const OUT = new URL("../src/content/projects.json", import.meta.url);
 
+/* Everything the site can render. A column missing here is a field the
+   console happily saves and the website never shows -- which is exactly what
+   happened to specs and amenities. */
 const COLUMNS = [
   "slug", "name", "locality", "status", "type", "configs", "config_label",
-  "rera", "towers", "possession", "line", "img", "coords", "plans"
+  "rera", "qr_url", "towers", "possession", "line", "img", "coords", "plans",
+  "description", "price_band", "specs", "amenities"
 ].join(",");
 
 /* The committed projects.json is the fallback. A build that cannot reach

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/content.mjs && node scripts/thumbs.mjs",
+    "prebuild": "eslint . && node scripts/content.mjs && node scripts/thumbs.mjs",
+    "lint": "eslint .",
     "content": "node scripts/content.mjs",
     "build": "vite build",
     "thumbs": "node scripts/thumbs.mjs",
@@ -17,7 +18,10 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitejs/plugin-react": "^6.0.5",
+    "eslint": "^10.8.1",
+    "globals": "^17.9.0",
     "sharp": "^0.35.3",
     "vite": "^8.2.1"
   }

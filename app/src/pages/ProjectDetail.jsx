@@ -12,7 +12,28 @@ const GALLERY = [
   { cap: "Family lounge, 2 BHK", tag: "INTERIOR", img: "/assets/interior-lounge.png" }
 ];
 
-const SPECS = [
+/* Defaults, used only where a project has none of its own. They describe how
+   Marc builds generally, so they were right as a shared baseline — but they
+   were the ONLY source, which made the console's Specifications and Amenities
+   fields write to a database nothing ever read. A project that fills either
+   now overrides the corresponding list. */
+
+/* Console specs are one per line. "Label: value" splits into the two-column
+   row this page draws; a plain line becomes a single wide row, so nobody has
+   to learn a format to get a sensible result. */
+const parseSpecs = (text) =>
+  String(text || "")
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const at = line.indexOf(":");
+      return at > 0
+        ? [line.slice(0, at).trim().toUpperCase(), line.slice(at + 1).trim()]
+        : ["", line];
+    });
+
+const DEFAULT_SPECS = [
   ["STRUCTURE", "RCC framed, earthquake-resistant design to IS 1893"],
   ["FLOORING", "800×800 vitrified tiles; anti-skid in wet areas"],
   ["KITCHEN", "Granite platform, stainless sink, glazed dado"],
@@ -22,7 +43,7 @@ const SPECS = [
   ["WATER", "Underground + overhead tanks, solar water heating provision"]
 ];
 
-const AMENITIES = [
+const DEFAULT_AMENITIES = [
   "Two automatic lifts per wing",
   "Generator power backup, common areas & lifts",
   "Landscaped garden & walking loop",
@@ -84,6 +105,11 @@ export default function ProjectDetail() {
 
   const v = WALKTHROUGHS[vid];
   const plans = p.plans || [];
+  /* A project's own specs and amenities win; the shared defaults fill in for
+     the ones nobody has written yet. */
+  const ownSpecs = parseSpecs(p.specs);
+  const specs = ownSpecs.length ? ownSpecs : DEFAULT_SPECS;
+  const amenities = p.amenities?.length ? p.amenities : DEFAULT_AMENITIES;
   const q = encodeURIComponent(
     p.coords || (p.locality === "Ahilyanagar" ? "Ahmednagar, Maharashtra, India"
       : `${p.locality}, Ahmednagar, Maharashtra, India`)
@@ -252,8 +278,8 @@ export default function ProjectDetail() {
             <div>
               <div className="sec-head"><span className="mono kicker">06</span><h2>Specifications</h2></div>
               <div className="rows">
-                {SPECS.map(([k, val]) => (
-                  <div className="row-grid" key={k}>
+                {specs.map(([k, val], i) => (
+                  <div className="row-grid" key={`${k}-${i}`}>
                     <span className="mono muted">{k}</span><span>{val}</span>
                   </div>
                 ))}
@@ -262,7 +288,7 @@ export default function ProjectDetail() {
             <div>
               <div className="sec-head"><span className="mono kicker">07</span><h2>Amenities</h2></div>
               <div className="rows">
-                {AMENITIES.map((a) => (
+                {amenities.map((a) => (
                   <div className="amen" key={a}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" aria-hidden="true">
                       <path d="M4 12.5l5 5L20 6.5" />
