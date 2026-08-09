@@ -19,6 +19,12 @@ const BLANK = {
 };
 
 const slugify = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/* Same parser the site uses, so what previews here is what plays there. */
+const youtubeId = (url) =>
+  String(url || "").match(
+    /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+  )?.[1] ?? null;
 const iconFor = (n) => /\.glb$/i.test(n) ? <Box /> : /\.(mp4|mov)$/i.test(n) ? <Play /> : <Doc />;
 
 export default function ProjectEditor({ id, onBack, onChanged }) {
@@ -423,27 +429,44 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                 {(p.videos || []).map((vd, i) => {
                   const setVid = (patch) =>
                     set({ videos: p.videos.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
+                  const ytId = youtubeId(vd.url);
                   return (
-                    <div className="pair" key={i} style={{ alignItems: "end" }}>
-                      <div className="field">
-                        <label>Configuration</label>
-                        <input className="input" value={vd.label || ""} placeholder="2 BHK"
-                          onChange={(e) => setVid({ label: e.target.value })} />
+                    <div className="plan-row" key={i}>
+                      {/* YouTube's own thumbnail, straight off the id. If it
+                          appears the link parsed; if it does not, the link is
+                          wrong — which beats finding out on the live site. */}
+                      <div className="plan-sheet">
+                        {ytId
+                          ? <img src={`https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`} alt="" />
+                          : <span className="mono">No video</span>}
                       </div>
-                      <div className="field">
-                        <label>YouTube link</label>
-                        <input className="input" value={vd.url || ""} placeholder="https://www.youtube.com/watch?v=…"
-                          onChange={(e) => setVid({ url: e.target.value })} />
-                      </div>
-                      <div className="field">
-                        <label>Length</label>
-                        <input className="input" value={vd.len || ""} placeholder="03:41"
-                          onChange={(e) => setVid({ len: e.target.value })} />
-                      </div>
-                      <div className="field">
+                      <div className="grow">
+                        <div className="pair">
+                          <div className="field">
+                            <label>Configuration</label>
+                            <input className="input" value={vd.label || ""} placeholder="2 BHK"
+                              onChange={(e) => setVid({ label: e.target.value })} />
+                          </div>
+                          <div className="field">
+                            <label>Length <span className="mono">optional</span></label>
+                            <input className="input" value={vd.len || ""} placeholder="03:41"
+                              onChange={(e) => setVid({ len: e.target.value })} />
+                          </div>
+                        </div>
+                        <div className="field">
+                          <label>YouTube link</label>
+                          <input className="input" value={vd.url || ""}
+                            placeholder="https://www.youtube.com/watch?v=…"
+                            onChange={(e) => setVid({ url: e.target.value })} />
+                          {vd.url?.trim() && !ytId && (
+                            <span className="mono" style={{ display: "block", marginTop: 6, color: "var(--danger)" }}>
+                              Not a YouTube link this site can play — it will open in a new tab instead of playing in the page.
+                            </span>
+                          )}
+                        </div>
                         <button className="btn btn-sm danger"
                           onClick={() => set({ videos: p.videos.filter((_, j) => j !== i) })}>
-                          Remove
+                          Remove video
                         </button>
                       </div>
                     </div>
@@ -504,17 +527,40 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   </span>
                 </li>
               ))}
-              {(p.media || []).map((m, i) => (
-                <li key={m.url}>
-                  {m.kind === "image" ? <Pic /> : iconFor(m.name)}
-                  <span className="grow">
-                    <span className="nm">{m.name}</span>
-                    <span className="mono" style={{ display: "block" }}>Uploaded</span>
-                  </span>
-                  <button className="btn btn-sm"
-                    onClick={() => set({ media: p.media.filter((_, j) => j !== i) })}>Remove</button>
-                </li>
-              ))}
+              {(p.media || []).map((m, i) => {
+                const setMedia = (patch) =>
+                  set({ media: p.media.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
+                return (
+                  <li key={m.url}>
+                    {m.kind === "image" ? <Pic /> : iconFor(m.name)}
+                    <span className="grow">
+                      <span className="nm">{m.name}</span>
+                      {/* Images are the gallery on the project page. The
+                          caption and tag are shown there, so they belong
+                          here rather than in the filename. */}
+                      {m.kind === "image" ? (
+                        <span className="media-meta">
+                          <input className="input" value={m.cap || ""}
+                            placeholder="Caption shown under the photo"
+                            onChange={(e) => setMedia({ cap: e.target.value })} />
+                          <input className="input" list="media-tags" value={m.tag || ""}
+                            placeholder="RENDER"
+                            onChange={(e) => setMedia({ tag: e.target.value })} />
+                        </span>
+                      ) : (
+                        <span className="mono" style={{ display: "block" }}>Uploaded</span>
+                      )}
+                    </span>
+                    <button className="btn btn-sm danger"
+                      onClick={() => set({ media: p.media.filter((_, j) => j !== i) })}>Remove</button>
+                  </li>
+                );
+              })}
+              <datalist id="media-tags">
+                {["RENDER", "INTERIOR", "PROGRESS", "AMENITY", "PLAN"].map((t) => (
+                  <option key={t} value={t} />
+                ))}
+              </datalist>
             </ul>
 
             {images.length > 0 && (

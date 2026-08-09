@@ -3,7 +3,11 @@ import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome
 import { PROJECTS, bySlug, WALKTHROUGHS } from "../data/projects.js";
 import { card } from "../lib/img.js";
 
-const GALLERY = [
+/* Rainflower's images, which used to be THE gallery — hardcoded, and so shown
+   on all fourteen project pages. Bluebell's gallery was Rainflower's
+   elevation. They stay only as a fallback for a project with nothing uploaded
+   yet; anything with its own images uses those. */
+const DEFAULT_GALLERY = [
   { cap: "Signature elevation, east approach", tag: "RENDER", img: "/assets/rainflower-elevation.png" },
   { cap: "Street view at dusk", tag: "RENDER", img: "/assets/rainflower-dusk.png" },
   { cap: "Daylight elevation from the avenue", tag: "RENDER", img: "/assets/rainflower-day.png" },
@@ -42,6 +46,26 @@ const DEFAULT_SPECS = [
   ["ELECTRICAL", "Concealed copper wiring, modular switches, AC points"],
   ["WATER", "Underground + overhead tanks, solar water heating provision"]
 ];
+
+/* A filename is a poor caption but a better one than nothing, and it saves
+   retyping for images that are already named sensibly. The console can
+   override it per image. */
+const prettify = (name) =>
+  String(name || "")
+    .replace(/\.[a-z0-9]+$/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim();
+
+const galleryOf = (proj) => {
+  const own = (proj?.media || [])
+    .filter((m) => m.kind === "image")
+    .map((m) => ({
+      img: m.url,
+      cap: m.cap?.trim() || prettify(m.name),
+      tag: (m.tag || "PHOTO").toUpperCase()
+    }));
+  return own.length ? own : DEFAULT_GALLERY;
+};
 
 /* YouTube hands out four shapes of link and staff will paste whichever the
    browser gave them: watch?v=, youtu.be/, /embed/, /shorts/. Pull the id out
@@ -121,10 +145,13 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     if (lb < 0) return;
+    /* Length read from the project's own gallery, not a module constant, or
+       the arrow keys wrap at six on a project with three photographs. */
+    const n = galleryOf(p).length;
     const onKey = (e) => {
       if (e.key === "Escape") setLb(-1);
-      if (e.key === "ArrowLeft") setLb((i) => (i + GALLERY.length - 1) % GALLERY.length);
-      if (e.key === "ArrowRight") setLb((i) => (i + 1) % GALLERY.length);
+      if (e.key === "ArrowLeft") setLb((i) => (i + n - 1) % n);
+      if (e.key === "ArrowRight") setLb((i) => (i + 1) % n);
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -132,7 +159,7 @@ export default function ProjectDetail() {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lb]);
+  }, [lb, p]);
 
   if (!p) return null;
 
@@ -147,6 +174,7 @@ export default function ProjectDetail() {
   const ownSpecs = parseSpecs(p.specs);
   const specs = ownSpecs.length ? ownSpecs : DEFAULT_SPECS;
   const amenities = p.amenities?.length ? p.amenities : DEFAULT_AMENITIES;
+  const gallery = galleryOf(p);
   const q = encodeURIComponent(
     p.coords || (p.locality === "Ahilyanagar" ? "Ahmednagar, Maharashtra, India"
       : `${p.locality}, Ahmednagar, Maharashtra, India`)
@@ -306,7 +334,7 @@ export default function ProjectDetail() {
             <span className="note">Renders and dated construction progress. Click any frame to enlarge.</span>
           </div>
           <div className="gallery">
-            {GALLERY.map((g, i) => (
+            {gallery.map((g, i) => (
               <figure className="blueprint" key={g.cap} tabIndex={0} role="button"
                 onClick={() => setLb(i)}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLb(i); } }}>
@@ -434,22 +462,22 @@ export default function ProjectDetail() {
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Gallery"
           onClick={(e) => e.target === e.currentTarget && setLb(-1)}>
           <div className="lb-head">
-            <span className="mono">{GALLERY[lb].tag}</span>
-            <h2>{GALLERY[lb].cap}</h2>
+            <span className="mono">{gallery[lb].tag}</span>
+            <h2>{gallery[lb].cap}</h2>
             <button type="button" className="btn btn-icon" aria-label="Close gallery" onClick={() => setLb(-1)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
           </div>
           <div className="lb-body">
             <button type="button" className="btn btn-icon" aria-label="Previous image"
-              onClick={() => setLb((i) => (i + GALLERY.length - 1) % GALLERY.length)}>
+              onClick={() => setLb((i) => (i + gallery.length - 1) % gallery.length)}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
             </button>
             <div className="blueprint lb-frame">
-              <img src={GALLERY[lb].img} alt={GALLERY[lb].cap} />
+              <img src={gallery[lb].img} alt={gallery[lb].cap} />
             </div>
             <button type="button" className="btn btn-icon" aria-label="Next image"
-              onClick={() => setLb((i) => (i + 1) % GALLERY.length)}>
+              onClick={() => setLb((i) => (i + 1) % gallery.length)}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
             </button>
           </div>

@@ -304,6 +304,12 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
 }
 .plan-sheet img { width: 100%; height: 100%; object-fit: cover; }
 .plan-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.plan-sheet .mono { color: var(--faint); }
+
+/* Caption + tag under a gallery image in the media list */
+.media-meta { display: grid; grid-template-columns: 1fr 150px; gap: 8px; margin-top: 8px; }
+.media-meta .input { padding: 7px 10px; font-size: 14px; }
+@media (max-width: 700px) { .media-meta { grid-template-columns: 1fr; } }
 .btn.danger { color: var(--danger); border-color: var(--line); }
 .btn.danger:hover { background: #fbeceb; border-color: var(--danger); }
 
