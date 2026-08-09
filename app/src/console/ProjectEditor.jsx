@@ -73,7 +73,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
         const r = await triggerRebuild();
         setNote(r.ok
           ? "Published. The website is rebuilding — give it about a minute."
-          : "Saved and published in the console. The website updates on its next deploy: set VITE_VERCEL_DEPLOY_HOOK to make that automatic.");
+          : `Published in the console, but the website was not rebuilt (${r.reason}). It will update on the next deploy.`);
       } else {
         setNote("Draft saved.");
       }

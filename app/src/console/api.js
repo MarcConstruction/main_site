@@ -109,16 +109,25 @@ export const logActivity = (summary) =>
   db("activity", { method: "POST", body: { summary, actor: session.email() } })
     .catch(() => {});   // the feed is a nicety; never fail a save over it
 
-/* Publishing rebuilds the static site. Without the hook set, changes sit in
-   Supabase until the next deploy — so this says so out loud rather than
-   pretending the site updated. */
+/* Publishing rebuilds the static site.
+
+   Via our own /api/publish rather than the Vercel hook directly: the hook URL
+   must not reach the browser, or anyone who reads this bundle can trigger
+   builds until the quota is gone. The route checks the caller is on the staff
+   list before firing.
+
+   If it is not configured the console says so plainly rather than pretending
+   the website updated. */
 export async function triggerRebuild() {
-  const hook = import.meta.env.VITE_VERCEL_DEPLOY_HOOK;
-  if (!hook) return { ok: false, reason: "no-hook" };
   try {
-    await fetch(hook, { method: "POST" });
-    return { ok: true };
-  } catch {
-    return { ok: false, reason: "failed" };
+    const res = await fetch("/api/publish", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.token()}` }
+    });
+    if (res.ok) return { ok: true };
+    const { error } = await res.json().catch(() => ({}));
+    return { ok: false, reason: error || `HTTP ${res.status}` };
+  } catch (err) {
+    return { ok: false, reason: err.message };
   }
 }

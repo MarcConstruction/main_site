@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db, logActivity } from "./api.js";
+import { db, logActivity, triggerRebuild } from "./api.js";
 import { Pencil, Trash, Eye } from "./Icons.jsx";
 
 const asDate = (iso) =>
@@ -8,6 +8,7 @@ const asDate = (iso) =>
 export default function Projects({ counts, onOpen, onChanged }) {
   const [rows, setRows] = useState(null);
   const [error, setError] = useState("");
+  const [note, setNote] = useState("");
   const [q, setQ] = useState("");
   const [drag, setDrag] = useState(null);
   const [over, setOver] = useState(null);
@@ -30,12 +31,21 @@ export default function Projects({ counts, onOpen, onChanged }) {
       setError(`${row.name} needs a MahaRERA value before it can go live. Open it and fill the Compliance tab.`);
       return;
     }
-    setError("");
+    setError(""); setNote("");
     setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, published: next } : r)));
     try {
       await db(`projects?id=eq.${row.id}`, { method: "PATCH", body: { published: next } });
       logActivity(`${row.name} ${next ? "published" : "moved to draft"}`);
       onChanged?.();
+
+      /* This switch changes what the public site shows, so it has to rebuild
+         it — the same as Publish in the editor. Without this, flipping a
+         project to draft looked like it worked while the website carried on
+         serving it, which is exactly how this was found. */
+      const r = await triggerRebuild();
+      setNote(r.ok
+        ? `${row.name} is now ${next ? "published" : "a draft"}. The website is rebuilding — about a minute.`
+        : `Saved, but the website was not rebuilt (${r.reason}). It will update on the next deploy.`);
     } catch (e) {
       setRows((rs) => rs.map((r) => (r.id === row.id ? { ...r, published: !next } : r)));
       setError(e.message);
@@ -100,6 +110,7 @@ export default function Projects({ counts, onOpen, onChanged }) {
 
       <div className="view">
         {error && <p className="err" role="alert">{error}</p>}
+        {note && <p className="ok" role="status">{note}</p>}
         {rows === null && !error && <p className="spinner">Loading projects…</p>}
 
         {rows && (
