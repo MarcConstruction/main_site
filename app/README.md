@@ -81,10 +81,20 @@ than sit alongside.
 | Project editor | Details / Media / Specifications / Compliance tabs, drag-drop upload with progress, cover picker |
 | Enquiries | Status workflow, search, month filter, Call and WhatsApp, CSV export |
 
-**Publishing rebuilds the site.** Saving writes to Supabase; publishing also
-POSTs to `VITE_VERCEL_DEPLOY_HOOK`, which re-runs the build and therefore
-`content.mjs`. Without that variable set the console says so plainly instead
-of claiming the website updated.
+**Publishing rebuilds the site.** Saving writes to Supabase; publishing — and
+the Live switch on the projects table — also POSTs to `/api/publish`, which
+fires the Vercel deploy hook and so re-runs `content.mjs`. Without the hook
+configured the console says so plainly instead of claiming the website updated.
+
+The hook URL lives in **`VERCEL_DEPLOY_HOOK`, with no `VITE_` prefix**. That
+prefix means "inline into the browser bundle", which is how the URL ended up
+readable by anyone who opened the console's JavaScript — and a deploy hook
+needs no authentication, so it could be POSTed in a loop until the build quota
+was gone. `/api/publish` keeps it server-side and checks the caller is on the
+staff list first.
+
+Vercel injects environment variables at deploy time, not per request, so
+changing that value takes effect on the *next* deployment.
 
 Access is the `staff` table — `is_staff()` reads from it and every policy in
 `supabase/console.sql` reads from `is_staff()`. Add a colleague with one
