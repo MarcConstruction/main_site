@@ -4,17 +4,35 @@
 -- ==========================================================================
 
 -- --------------------------------------------------------------------------
--- Who counts as staff. One place to add people, referenced by every policy
--- below, so access is never spread across a dozen `using` clauses.
+-- Who counts as staff.
+--
+-- A table rather than a list of addresses baked into the function, so this
+-- whole file runs verbatim with nothing to edit first, and adding a colleague
+-- later is one INSERT instead of a migration. The single line you must run
+-- with your own address is at the very bottom of this file.
 -- --------------------------------------------------------------------------
+create table if not exists public.staff (
+  email    text primary key,
+  name     text,
+  added_at timestamptz not null default now()
+);
+
+alter table public.staff enable row level security;
+
+/* SECURITY DEFINER matters here: the function runs as its owner, which owns
+   `staff` and therefore bypasses RLS on it. Without that, a policy that calls
+   is_staff() to read a table would recurse into the policy on `staff`. */
 create or replace function public.is_staff()
 returns boolean
 language sql stable security definer set search_path = public
 as $$
-  select (auth.jwt() ->> 'email') in (
-    'you@marcconstruction.in'   -- REPLACE, and add more addresses here
+  select exists (
+    select 1 from public.staff where email = (auth.jwt() ->> 'email')
   );
 $$;
+
+create policy "staff read the staff list"
+  on public.staff for select to authenticated using (public.is_staff());
 
 -- --------------------------------------------------------------------------
 -- Projects
@@ -156,3 +174,12 @@ create policy "staff replace project media"
 create policy "staff delete project media"
   on storage.objects for delete to authenticated
   using (bucket_id = 'project-media' and public.is_staff());
+
+-- ==========================================================================
+-- THE ONE LINE TO EDIT. Put the email you sign in with, then run it.
+-- Until this row exists, is_staff() is false for everyone and the console
+-- shows empty lists -- which is the safe direction to fail in.
+-- ==========================================================================
+insert into public.staff (email, name)
+values ('you@marcconstruction.in', 'Marc — Director')
+on conflict (email) do nothing;
