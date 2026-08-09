@@ -572,6 +572,24 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
               </datalist>
             </ul>
 
+            {/* The cover is shown whatever it points at. A project seeded
+                before the console existed still carries its original file,
+                which is not among the uploads below — so the picker marked
+                nothing and there was no way to see what the cover even was. */}
+            <span className="mono legend" style={{ marginTop: 22 }}>Cover image</span>
+            <div className="cover-now">
+              {p.img
+                ? <img src={p.img} alt="Current cover" />
+                : <span className="mono">None set</span>}
+              <span className="mono">
+                {!p.img
+                  ? "No cover yet. Upload an image and click it below."
+                  : images.some((m) => m.url === p.img)
+                    ? "Used on the project card, the home page wall and the top of the project page."
+                    : "This is an original file, not one of the uploads below. Click one to replace it."}
+              </span>
+            </div>
+
             {images.length > 0 && (
               <>
                 <span className="mono legend" style={{ marginTop: 22 }}>Images — pick the cover</span>

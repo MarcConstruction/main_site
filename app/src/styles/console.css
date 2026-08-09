@@ -313,6 +313,14 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
 .btn.danger { color: var(--danger); border-color: var(--line); }
 .btn.danger:hover { background: #fbeceb; border-color: var(--danger); }
 
+/* What the cover is right now, whatever file it points at */
+.cover-now { display: flex; gap: 14px; align-items: center; margin-top: 10px; }
+.cover-now img {
+  width: 132px; aspect-ratio: 4/3; object-fit: cover;
+  border: 1px solid var(--accent); display: block;
+}
+.cover-now .mono { text-transform: none; letter-spacing: .02em; line-height: 1.5; }
+
 .covers { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px; margin-top: 14px; }
 .cover { border: 1px dashed var(--faint); aspect-ratio: 4/3; display: grid; place-items: center; position: relative; background: var(--panel); overflow: hidden; }
 .cover img { width: 100%; height: 100%; object-fit: cover; }
