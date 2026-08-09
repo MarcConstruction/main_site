@@ -53,8 +53,18 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
   const save = async ({ publish } = {}) => {
     setSaving(true); setError(""); setNote("");
+    /* Google Maps copies the pair with a space, and an untouched field is "".
+       The column takes null or "lat,lng" and nothing else, so straighten both
+       here rather than letting the constraint answer in Postgres dialect. */
+    const coords = (p.coords || "").replace(/\s/g, "") || null;
+    if (coords && !/^-?\d+\.\d+,-?\d+\.\d+$/.test(coords)) {
+      setError("Map coordinates must read like 19.1223267,74.7473039 — latitude, comma, longitude. Leave it empty if you do not have the pin.");
+      setSaving(false);
+      return;
+    }
     const body = {
       ...p,
+      coords,
       slug: p.slug || slugify(p.name),
       published: publish ?? p.published
     };

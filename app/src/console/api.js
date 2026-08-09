@@ -10,6 +10,7 @@ const SB_URL = import.meta.env.VITE_SUPABASE_URL;
 const SB_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const KEY_TOKEN = "marc.console.token";
+const KEY_REFRESH = "marc.console.refresh";
 const KEY_EMAIL = "marc.console.email";
 
 /* "Keep me signed in" is the difference between localStorage (survives closing
@@ -17,19 +18,52 @@ const KEY_EMAIL = "marc.console.email";
    default matters, so it defaults to off. */
 export const session = {
   token: () => localStorage.getItem(KEY_TOKEN) || sessionStorage.getItem(KEY_TOKEN),
+  refresh: () => localStorage.getItem(KEY_REFRESH) || sessionStorage.getItem(KEY_REFRESH),
   email: () => localStorage.getItem(KEY_EMAIL) || sessionStorage.getItem(KEY_EMAIL),
-  save(token, email, remember) {
+  save({ access_token, refresh_token }, email, remember) {
     const store = remember ? localStorage : sessionStorage;
-    store.setItem(KEY_TOKEN, token);
+    store.setItem(KEY_TOKEN, access_token);
+    if (refresh_token) store.setItem(KEY_REFRESH, refresh_token);
     store.setItem(KEY_EMAIL, email);
   },
   clear() {
     for (const s of [localStorage, sessionStorage]) {
-      s.removeItem(KEY_TOKEN);
-      s.removeItem(KEY_EMAIL);
+      for (const k of [KEY_TOKEN, KEY_REFRESH, KEY_EMAIL]) s.removeItem(k);
     }
   }
 };
+
+const expiry = (jwt) => {
+  try { return JSON.parse(atob(jwt.split(".")[1])).exp * 1000; }
+  catch { return 0; }
+};
+
+/* Supabase expires an access token after an hour. Without this the console
+   kept using the dead one, and Supabase treats an expired JWT as anonymous
+   rather than rejecting it -- so a request would fail the `to authenticated`
+   policy and come back as "new row violates row-level security policy",
+   which points at the policy instead of the token. Refresh a minute early so
+   a slow upload cannot expire mid-flight. */
+export async function freshToken() {
+  const token = session.token();
+  if (!token) return null;
+  if (Date.now() < expiry(token) - 60_000) return token;
+
+  const refresh_token = session.refresh();
+  if (!refresh_token) return token;   // pre-refresh session; let the 401 handle it
+
+  const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+    method: "POST",
+    headers: { apikey: SB_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh_token })
+  });
+  if (!res.ok) return token;
+
+  const data = await res.json();
+  const remember = Boolean(localStorage.getItem(KEY_TOKEN));
+  session.save(data, session.email(), remember);
+  return data.access_token;
+}
 
 export class AuthError extends Error {}
 
@@ -41,7 +75,7 @@ export async function signIn(email, password, remember) {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error_description || data.msg || "Sign in failed");
-  session.save(data.access_token, email, remember);
+  session.save(data, email, remember);
   return data.access_token;
 }
 
@@ -58,7 +92,7 @@ export async function resetPassword(email) {
    throwing AuthError lets the shell drop straight back to the login screen
    rather than each screen inventing its own handling. */
 export async function db(path, { method = "GET", body, headers = {}, raw = false } = {}) {
-  const token = session.token();
+  const token = await freshToken();
   const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
     method,
     headers: {
@@ -82,15 +116,19 @@ export async function db(path, { method = "GET", body, headers = {}, raw = false
 
 /* Storage upload. XMLHttpRequest rather than fetch purely because fetch cannot
    report upload progress, and the editor shows a percentage per file. */
-export function upload(file, onProgress) {
+export async function upload(file, onProgress) {
   const safe = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-");
   const path = `${Date.now()}-${safe}`;
+  /* Storage authenticates the JWT itself. An expired one is treated as
+     anonymous, not rejected, so this must be fresh before the upload starts
+     or the failure arrives disguised as a policy problem. */
+  const token = await freshToken();
 
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", `${SB_URL}/storage/v1/object/project-media/${path}`);
     xhr.setRequestHeader("apikey", SB_KEY);
-    xhr.setRequestHeader("Authorization", `Bearer ${session.token()}`);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
     /* No x-upsert. It made storage evaluate the UPDATE policy as well as
        INSERT, which is a second way to be rejected, and the filename above
        carries a timestamp so nothing is ever overwritten anyway. */
@@ -124,7 +162,7 @@ export async function triggerRebuild() {
   try {
     const res = await fetch("/api/publish", {
       method: "POST",
-      headers: { Authorization: `Bearer ${session.token()}` }
+      headers: { Authorization: `Bearer ${await freshToken()}` }
     });
     if (res.ok) return { ok: true };
     const { error } = await res.json().catch(() => ({}));
