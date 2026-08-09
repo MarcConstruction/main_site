@@ -53,12 +53,15 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
   const save = async ({ publish } = {}) => {
     setSaving(true); setError(""); setNote("");
-    /* Google Maps copies the pair with a space, and an untouched field is "".
-       The column takes null or "lat,lng" and nothing else, so straighten both
-       here rather than letting the constraint answer in Postgres dialect. */
-    const coords = (p.coords || "").replace(/\s/g, "") || null;
-    if (coords && !/^-?\d+\.\d+,-?\d+\.\d+$/.test(coords)) {
-      setError("Map coordinates must read like 19.1223267,74.7473039 — latitude, comma, longitude. Leave it empty if you do not have the pin.");
+    /* People paste whatever Google Maps handed them: "19.12, 74.74" with a
+       space, or the whole URL. Pull the first two numbers out and rebuild the
+       pair, rather than rejecting a paste that plainly contains the answer.
+       An untouched field is "", which must become null -- the column takes
+       null or "lat,lng" and nothing in between. */
+    const found = String(p.coords || "").match(/-?\d+(?:\.\d+)?/g);
+    const coords = found && found.length >= 2 ? `${found[0]},${found[1]}` : null;
+    if (p.coords?.trim() && !coords) {
+      setError("Could not read a latitude and longitude from that. Paste the pair Google Maps copies, like 19.1223267, 74.7473039 — or leave it empty rather than guessing.");
       setSaving(false);
       return;
     }
