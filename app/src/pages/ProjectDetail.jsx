@@ -3,19 +3,6 @@ import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome
 import { PROJECTS, bySlug, WALKTHROUGHS } from "../data/projects.js";
 import { card } from "../lib/img.js";
 
-/* Rainflower's images, which used to be THE gallery — hardcoded, and so shown
-   on all fourteen project pages. Bluebell's gallery was Rainflower's
-   elevation. They stay only as a fallback for a project with nothing uploaded
-   yet; anything with its own images uses those. */
-const DEFAULT_GALLERY = [
-  { cap: "Signature elevation, east approach", tag: "RENDER", img: "/assets/rainflower-elevation.png" },
-  { cap: "Street view at dusk", tag: "RENDER", img: "/assets/rainflower-dusk.png" },
-  { cap: "Daylight elevation from the avenue", tag: "RENDER", img: "/assets/rainflower-day.png" },
-  { cap: "Aerial view of the podium and landscape court", tag: "RENDER", img: "/assets/rainflower-aerial.png" },
-  { cap: "Living room, 3 BHK", tag: "INTERIOR", img: "/assets/interior-living.png" },
-  { cap: "Family lounge, 2 BHK", tag: "INTERIOR", img: "/assets/interior-lounge.png" }
-];
-
 /* Defaults, used only where a project has none of its own. They describe how
    Marc builds generally, so they were right as a shared baseline — but they
    were the ONLY source, which made the console's Specifications and Amenities
@@ -56,6 +43,14 @@ const prettify = (name) =>
     .replace(/[-_]+/g, " ")
     .trim();
 
+/* Only this project's own images, and no shared fallback.
+   There used to be one — six Rainflower photographs — which meant Bluebell's
+   gallery showed a building that was not Bluebell. For a builder selling
+   flats, a picture of the wrong property is worse than no picture, so an
+   empty gallery hides the section instead.
+
+   The cover counts as the project's own, so a project with a cover and
+   nothing else still shows that one honestly. */
 const galleryOf = (proj) => {
   const own = (proj?.media || [])
     .filter((m) => m.kind === "image")
@@ -64,7 +59,8 @@ const galleryOf = (proj) => {
       cap: m.cap?.trim() || prettify(m.name),
       tag: (m.tag || "PHOTO").toUpperCase()
     }));
-  return own.length ? own : DEFAULT_GALLERY;
+  if (own.length) return own;
+  return proj?.img ? [{ img: proj.img, cap: proj.name, tag: "RENDER" }] : [];
 };
 
 /* YouTube hands out four shapes of link and staff will paste whichever the
@@ -328,6 +324,9 @@ export default function ProjectDetail() {
           </div>
         </section>
 
+        {/* No photographs of this project, no gallery. An empty grid, or one
+            borrowed from another building, both say something untrue. */}
+        {gallery.length > 0 && (
         <section className="wrap sec">
           <div className="sec-head">
             <span className="mono kicker">04</span><h2>Gallery</h2>
@@ -335,7 +334,9 @@ export default function ProjectDetail() {
           </div>
           <div className="gallery">
             {gallery.map((g, i) => (
-              <figure className="blueprint" key={g.cap} tabIndex={0} role="button"
+              /* Keyed by url, not caption: two uploads can share a caption
+                 and React would drop one of them. */
+              <figure className="blueprint" key={g.img} tabIndex={0} role="button"
                 onClick={() => setLb(i)}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLb(i); } }}>
                 <div className="shot"><img src={card(g.img)} alt={g.cap} loading="lazy" /></div>
@@ -344,6 +345,7 @@ export default function ProjectDetail() {
             ))}
           </div>
         </section>
+        )}
 
         <section className="wrap sec">
           <div className="sec-head"><span className="mono kicker">05</span><h2>Floor plans</h2></div>
