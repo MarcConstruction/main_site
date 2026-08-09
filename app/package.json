@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/thumbs.mjs",
+    "prebuild": "node scripts/content.mjs && node scripts/thumbs.mjs",
+    "content": "node scripts/content.mjs",
     "build": "vite build",
     "thumbs": "node scripts/thumbs.mjs",
     "preview": "vite preview"
