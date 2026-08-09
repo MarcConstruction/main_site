@@ -22,12 +22,18 @@ alter table public.staff enable row level security;
 /* SECURITY DEFINER matters here: the function runs as its owner, which owns
    `staff` and therefore bypasses RLS on it. Without that, a policy that calls
    is_staff() to read a table would recurse into the policy on `staff`. */
+/* Compared case-insensitively on purpose. Supabase lowercases the address on
+   the account, but a human typing the staff row writes it however the address
+   is normally written -- "Info@marcconstruction.in". An exact match then
+   silently fails, and the symptom is not a login error but empty lists and
+   storage uploads rejected for violating row-level security. */
 create or replace function public.is_staff()
 returns boolean
 language sql stable security definer set search_path = public
 as $$
   select exists (
-    select 1 from public.staff where email = (auth.jwt() ->> 'email')
+    select 1 from public.staff
+    where lower(email) = lower(auth.jwt() ->> 'email')
   );
 $$;
 
