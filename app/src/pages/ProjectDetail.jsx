@@ -106,11 +106,11 @@ const DEFAULT_AMENITIES = [
   "Rainwater harvesting"
 ];
 
-const NEARBY = [
-  ["Nearest bus stop", "400 M"], ["Sanjivani English School", "1.1 KM"],
-  ["Booth Hospital", "2.4 KM"], ["Nagar–Manmad Road", "2.8 KM"],
-  ["Ahilyanagar railway station", "5.6 KM"], ["Market Yard", "6.2 KM"]
-];
+/* Nearby landmarks come from the project, not from here. The six that used to
+   live in this file were shown on every page and were not even right for the
+   one they described: measured from Rainflower's pin, the nearest bus stop is
+   750 m rather than 400, and the nearest hospital 400 m rather than 2.4 km.
+   The console suggests them from the map pin and a human corrects them. */
 
 /* Paste a Google My Maps id here to show every site on one map with this
    project centred; until then each page shows its own exact pin. */
@@ -185,6 +185,7 @@ export default function ProjectDetail() {
   const amenities = p.amenities?.length ? p.amenities : DEFAULT_AMENITIES;
   const gallery = galleryOf(p);
   const progress = p.progress || [];
+  const nearby = p.nearby || [];
   const q = encodeURIComponent(
     p.coords || (p.locality === "Ahilyanagar" ? "Ahmednagar, Maharashtra, India"
       : `${p.locality}, Ahmednagar, Maharashtra, India`)
@@ -476,14 +477,19 @@ export default function ProjectDetail() {
                   href={`https://www.google.com/maps/search/?api=1&query=${q}`}>Open in Maps</a>
               </div>
             </div>
-            <div>
-              <span className="mono muted band-label">NEARBY</span>
-              <div className="rows">
-                {NEARBY.map(([place, dist]) => (
-                  <div className="row" key={place}><span>{place}</span><span className="mono muted">{dist}</span></div>
-                ))}
+            {nearby.length > 0 && (
+              <div>
+                <span className="mono muted band-label">NEARBY</span>
+                <div className="rows">
+                  {nearby.map((n, i) => (
+                    <div className="row" key={`${n.place}-${i}`}>
+                      <span>{n.place}</span>
+                      <span className="mono muted">{n.distance}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { db, upload, logActivity, triggerRebuild } from "./api.js";
 import { Back, Alert, Up, Box, Play, Doc, Pic } from "./Icons.jsx";
+import { suggestNearby } from "./nearby.js";
 
 const TABS = ["Details", "Media", "Specifications", "Compliance"];
 /* Starting suggestions only — the field is free text and the list below is
@@ -67,7 +68,7 @@ const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
   line: "", img: "", coords: "", description: "", price_band: "", specs: "",
-  amenities: [], plans: [], media: [], videos: [], progress: [], model_url: "", published: false
+  amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], model_url: "", published: false
 };
 
 const slugify = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -90,6 +91,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const [localities, setLocalities] = useState(SEED_LOCALITIES);
   const [planBusy, setPlanBusy] = useState(-1);
   const [newAmenity, setNewAmenity] = useState("");
+  const [nearbyBusy, setNearbyBusy] = useState(false);
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -401,6 +403,57 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                       Fill with the usual stages
                     </button>
                   )}
+                </div>
+
+                <span className="mono legend" style={{ marginTop: 30 }}>What is nearby</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  Suggestions come from OpenStreetMap and are measured in a straight
+                  line from the map pin, not along the road.{" "}
+                  <strong>Check every one before publishing</strong> — a distance on a
+                  builder&rsquo;s page is a claim buyers act on.
+                </p>
+
+                {(p.nearby || []).map((n, i) => (
+                  <div className="spec-row" key={i}>
+                    <input className="input" value={n.place || ""} placeholder="Sanjivani English School"
+                      aria-label={`Landmark ${i + 1}`}
+                      onChange={(e) => set({ nearby: p.nearby.map((x, j) => j === i ? { ...x, place: e.target.value } : x) })} />
+                    <input className="input" value={n.distance || ""} placeholder="1.1 KM"
+                      aria-label={`Landmark ${i + 1} distance`}
+                      onChange={(e) => set({ nearby: p.nearby.map((x, j) => j === i ? { ...x, distance: e.target.value } : x) })} />
+                    <button className="btn btn-sm danger"
+                      onClick={() => set({ nearby: p.nearby.filter((_, j) => j !== i) })}>Remove</button>
+                  </div>
+                ))}
+
+                <div className="plan-actions" style={{ marginTop: 12 }}>
+                  <button className="btn btn-sm"
+                    onClick={() => set({ nearby: [...(p.nearby || []), { place: "", distance: "" }] })}>
+                    + Add a landmark
+                  </button>
+                  <button className="btn btn-sm" disabled={nearbyBusy}
+                    onClick={async () => {
+                      setNearbyBusy(true); setError(""); setNote("");
+                      try {
+                        const found = await suggestNearby(p.coords);
+                        if (!found.length) {
+                          setNote("OpenStreetMap has nothing mapped near that pin. Add landmarks by hand.");
+                        } else {
+                          /* Added to what is already there, not over it — a
+                             corrected distance should survive pressing this. */
+                          const have = new Set((p.nearby || []).map((n) => n.place?.toLowerCase()));
+                          const fresh = found.filter((n) => !have.has(n.place.toLowerCase()));
+                          set({ nearby: [...(p.nearby || []), ...fresh] });
+                          setNote(`Added ${fresh.length} suggestion${fresh.length === 1 ? "" : "s"}. Check each distance against the road route before publishing.`);
+                        }
+                      } catch (err) {
+                        setError(err.message);
+                      } finally {
+                        setNearbyBusy(false);
+                      }
+                    }}>
+                    {nearbyBusy ? "Looking…" : "Suggest from the map pin"}
+                  </button>
                 </div>
 
                 <div className="field" style={{ marginTop: 24 }}>
