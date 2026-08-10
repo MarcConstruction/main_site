@@ -24,6 +24,8 @@ export default function App() {
   const [counts, setCounts] = useState({});
   const [newCount, setNewCount] = useState(0);
   const [expired, setExpired] = useState("");
+  const [me, setMe] = useState({ name: "", role: "" });
+  const [editingMe, setEditingMe] = useState(false);
 
   /* Projects and enquiry counts live here rather than in each screen: the rail
      badge, the dashboard tiles and the projects table all read the same
@@ -47,6 +49,38 @@ export default function App() {
   }, []);
 
   useEffect(() => { if (signedIn) refresh(); }, [signedIn, refresh]);
+
+  /* Own staff row: the name and title shown in the rail. Matched
+     case-insensitively for the same reason is_staff() is — the address is
+     stored however it was typed, and lowercased on the account. */
+  const loadMe = useCallback(async () => {
+    const email = session.email();
+    if (!email) return;
+    try {
+      const rows = await db("staff?select=email,name,role");
+      const mine = rows.find((r) => r.email?.toLowerCase() === email.toLowerCase());
+      if (mine) setMe({ name: mine.name || "", role: mine.role || "" });
+    } catch { /* the rail falls back to the email; not worth an error banner */ }
+  }, []);
+
+  useEffect(() => { if (signedIn) loadMe(); }, [signedIn, loadMe]);
+
+  const saveMe = async (e) => {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const next = { name: f.get("name").trim(), role: f.get("role").trim() };
+    setMe(next);
+    setEditingMe(false);
+    try {
+      await db(`staff?email=eq.${encodeURIComponent(session.email())}`, {
+        method: "PATCH",
+        body: next
+      });
+    } catch {
+      /* Put it back rather than showing a name the database does not have. */
+      loadMe();
+    }
+  };
 
   if (!signedIn) {
     return (
@@ -82,14 +116,31 @@ export default function App() {
           ))}
         </nav>
 
-        <div className="rail-user">
-          <span className="initials">{initials(session.email())}</span>
-          <span className="who">
-            {session.email()}
-            <span className="mono" style={{ display: "block" }}>Director</span>
-          </span>
-          <button onClick={signOut} aria-label="Sign out" title="Sign out"><Out /></button>
-        </div>
+        {editingMe ? (
+          <form className="rail-user rail-edit" onSubmit={saveMe}>
+            <label className="mono" htmlFor="me-name">Your name</label>
+            <input className="input" id="me-name" name="name" defaultValue={me.name || ""}
+              placeholder="Rohan Kulkarni" autoFocus />
+            <label className="mono" htmlFor="me-role">Title</label>
+            <input className="input" id="me-role" name="role" defaultValue={me.role || ""}
+              placeholder="Director" />
+            <div className="rail-edit-actions">
+              <button type="submit" className="btn btn-sm btn-primary">Save</button>
+              <button type="button" className="btn btn-sm" onClick={() => setEditingMe(false)}>Cancel</button>
+            </div>
+          </form>
+        ) : (
+          <div className="rail-user">
+            <span className="initials">{initials(me.name || session.email())}</span>
+            {/* The whole block edits, because the thing people want to change
+                is the thing they are looking at. */}
+            <button className="who" onClick={() => setEditingMe(true)} title="Edit your name and title">
+              {me.name || session.email()}
+              <span className="mono" style={{ display: "block" }}>{me.role || "Staff"}</span>
+            </button>
+            <button onClick={signOut} aria-label="Sign out" title="Sign out"><Out /></button>
+          </div>
+        )}
       </aside>
 
       <main className="main">
