@@ -761,6 +761,28 @@ select.input { appearance: none; background-image: none; }
 .about-head figure { position: relative; height: 360px; overflow: hidden; }
 .about-head figure img { width: 100%; height: 100%; object-fit: cover; }
 
+/* The brand panel: mark centred on the surface tone, with the name small
+   beneath it. object-fit is reset to contain — the rule above crops to fill,
+   which is right for a photograph and wrong for a logo. */
+.about-head figure.about-mark {
+  display: grid;
+  place-content: center;
+  gap: 20px;
+  background: var(--color-surface);
+  padding: 40px;
+}
+.about-head figure.about-mark img {
+  width: clamp(96px, 12vw, 148px);
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.about-head figure.about-mark figcaption {
+  text-align: center;
+  letter-spacing: 0.18em;
+  color: var(--color-accent-700);
+}
+
 /* No rule under the years. The selected pill already carries the emphasis,
    and a full-width line under four chips reads as a table edge that nothing
    below it lines up with. */

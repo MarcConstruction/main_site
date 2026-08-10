@@ -45,8 +45,12 @@ export default function About() {
                 brochure.
               </p>
             </div>
-            <figure className="blueprint">
-              <img src={card("/assets/trident-aerial.png")} alt="A Marc project in Ahilyanagar" loading="lazy" />
+            {/* The mark rather than a project render: this heading is about
+                the company, and a single building beside it reads as that
+                building's page. */}
+            <figure className="blueprint about-mark">
+              <img src="/assets/marc-mark.png" alt="Marc Construction" />
+              <figcaption className="mono">Marc Construction</figcaption>
             </figure>
           </div>
         </div>
