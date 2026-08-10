@@ -80,6 +80,21 @@ export function Footer() {
           <p className="footer-blurb">
             Also branded Marc Developers · Madhumalati Constructions Pvt Ltd
           </p>
+
+          {/* With the wordmark and the trading names rather than under the
+              phone number: these are the company's own accounts, not another
+              way to reach the office. An empty list renders nothing — a row
+              of dead icons says a builder has no presence anywhere. */}
+          {SOCIALS.length > 0 && (
+            <div className="socials">
+              {SOCIALS.map((s) => (
+                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer"
+                  aria-label={s.label || networkFor(s.url)} title={s.label || networkFor(s.url)}>
+                  <SocialIcon url={s.url} />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
         <div className="footer-col">
           <span className="mono">EXPLORE</span>
@@ -103,19 +118,6 @@ export function Footer() {
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a><br />
             <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
           </p>
-
-          {/* Only the links that exist. An empty row of icons says a builder
-              has no presence anywhere, which is worse than saying nothing. */}
-          {SOCIALS.length > 0 && (
-            <div className="socials">
-              {SOCIALS.map((s) => (
-                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer"
-                  aria-label={s.label || networkFor(s.url)} title={s.label || networkFor(s.url)}>
-                  <SocialIcon url={s.url} />
-                </a>
-              ))}
-            </div>
-          )}
         </div>
       </div>
       <div className="footer-legal">
