@@ -22,8 +22,16 @@ const AMENITIES = [
   "Rainwater harvesting"
 ];
 
-/* The same seven the project page falls back to. Offered as a starting point
-   so the structure is right and only the wording needs attention. */
+/* Offered when a project has no stages yet, so the shape is right and only
+   the wording needs attention. */
+const STANDARD_STAGES = [
+  { stage: "Excavation & footing", state: "Complete" },
+  { stage: "Slab work", state: "In progress" },
+  { stage: "Blockwork & plaster", state: "" },
+  { stage: "Finishing & handover", state: "" }
+];
+
+/* The same seven the project page falls back to. */
 const STANDARD_SPECS = [
   { k: "STRUCTURE", v: "RCC framed, earthquake-resistant design to IS 1893" },
   { k: "FLOORING", v: "800×800 vitrified tiles; anti-skid in wet areas" },
@@ -59,7 +67,7 @@ const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
   line: "", img: "", coords: "", description: "", price_band: "", specs: "",
-  amenities: [], plans: [], media: [], videos: [], model_url: "", published: false
+  amenities: [], plans: [], media: [], videos: [], progress: [], model_url: "", published: false
 };
 
 const slugify = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -359,7 +367,43 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                     onChange={(e) => set({ description: e.target.value })} />
                 </div>
 
-                <div className="field">
+                <span className="mono legend" style={{ marginTop: 30 }}>Construction progress</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  The stages shown on the project page. <strong>Complete</strong> and{" "}
+                  <strong>In progress</strong> colour themselves; anything else — a month
+                  and year — reads as a target still ahead.
+                </p>
+
+                {(p.progress || []).map((s, i) => (
+                  <div className="spec-row" key={i}>
+                    <input className="input" value={s.stage || ""} placeholder="Wing A, 11 slabs"
+                      aria-label={`Stage ${i + 1}`}
+                      onChange={(e) => set({ progress: p.progress.map((x, j) => j === i ? { ...x, stage: e.target.value } : x) })} />
+                    <input className="input" list="progress-states" value={s.state || ""}
+                      placeholder="Complete" aria-label={`Stage ${i + 1} state`}
+                      onChange={(e) => set({ progress: p.progress.map((x, j) => j === i ? { ...x, state: e.target.value } : x) })} />
+                    <button className="btn btn-sm danger"
+                      onClick={() => set({ progress: p.progress.filter((_, j) => j !== i) })}>Remove</button>
+                  </div>
+                ))}
+                <datalist id="progress-states">
+                  {["Complete", "In progress"].map((s) => <option key={s} value={s} />)}
+                </datalist>
+
+                <div className="plan-actions" style={{ marginTop: 12 }}>
+                  <button className="btn btn-sm"
+                    onClick={() => set({ progress: [...(p.progress || []), { stage: "", state: "" }] })}>
+                    + Add a stage
+                  </button>
+                  {!(p.progress || []).length && (
+                    <button className="btn btn-sm"
+                      onClick={() => set({ progress: STANDARD_STAGES.map((s) => ({ ...s })) })}>
+                      Fill with the usual stages
+                    </button>
+                  )}
+                </div>
+
+                <div className="field" style={{ marginTop: 24 }}>
                   <label htmlFor="f-coords">Map coordinates</label>
                   <input className="input" id="f-coords" value={p.coords || ""}
                     placeholder="19.1223267,74.7473039"

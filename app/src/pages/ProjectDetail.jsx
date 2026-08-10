@@ -116,6 +116,16 @@ const NEARBY = [
    project centred; until then each page shows its own exact pin. */
 const MY_MAP_ID = "";
 
+/* A stage reads as done, under way, or still ahead. Only the first two are
+   fixed words; anything else is treated as a target date, which is how
+   "Mar 2027" ends up in the pending colour without needing its own field. */
+const stateClass = (state) => {
+  const s = String(state || "").trim().toLowerCase();
+  if (s === "complete" || s === "completed" || s === "done") return "kicker";
+  if (s === "in progress" || s === "ongoing" || s === "under way") return "muted";
+  return "pending";
+};
+
 const Pending = ({ children }) => (
   <b className={isPending(children) ? "pending" : undefined}>{children}</b>
 );
@@ -174,6 +184,7 @@ export default function ProjectDetail() {
   const specs = ownSpecs.length ? ownSpecs : DEFAULT_SPECS;
   const amenities = p.amenities?.length ? p.amenities : DEFAULT_AMENITIES;
   const gallery = galleryOf(p);
+  const progress = p.progress || [];
   const q = encodeURIComponent(
     p.coords || (p.locality === "Ahilyanagar" ? "Ahmednagar, Maharashtra, India"
       : `${p.locality}, Ahmednagar, Maharashtra, India`)
@@ -265,7 +276,8 @@ export default function ProjectDetail() {
         <section className="wrap sec">
           {/* Without films this collapses to a single column rather than
               leaving half the split empty. */}
-          <div className={vids.length ? "detail-split" : undefined}>
+          {/* Two columns only when both halves have something to show. */}
+          <div className={vids.length && progress.length ? "detail-split" : undefined}>
             {vids.length > 0 && (
             <div>
               <div className="sec-head">
@@ -313,14 +325,20 @@ export default function ProjectDetail() {
             </div>
             )}
 
+            {/* No stages recorded, no Progress panel — the alternative was
+                telling every project it had poured Wing A's eleventh slab. */}
+            {progress.length > 0 && (
             <div>
               <div className="sec-head"><span className="mono kicker">03</span><h2>Progress</h2></div>
               <div className="rows">
-                <div className="row"><span>Excavation &amp; footing</span><span className="mono kicker">COMPLETE</span></div>
-                <div className="row"><span>Wing A, 11 slabs</span><span className="mono kicker">COMPLETE</span></div>
-                <div className="row"><span>Wing B, 7 of 11 slabs</span><span className="mono muted">IN PROGRESS</span></div>
-                <div className="row"><span>Blockwork &amp; plaster</span><span className="mono muted">IN PROGRESS</span></div>
-                <div className="row"><span>Finishing &amp; handover</span><span className="mono pending">MAR 2027</span></div>
+                {progress.map((s, i) => (
+                  <div className="row" key={`${s.stage}-${i}`}>
+                    <span>{s.stage}</span>
+                    <span className={`mono ${stateClass(s.state)}`}>
+                      {String(s.state || "").toUpperCase()}
+                    </span>
+                  </div>
+                ))}
               </div>
               <div className="blueprint progress-note">
                 <h3>Regular progress on WhatsApp</h3>
@@ -328,6 +346,7 @@ export default function ProjectDetail() {
                 <a className="btn btn-secondary" href="https://wa.me/919552555621" target="_blank" rel="noopener noreferrer">Get updates</a>
               </div>
             </div>
+            )}
           </div>
         </section>
 
