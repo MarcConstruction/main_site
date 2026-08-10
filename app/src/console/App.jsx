@@ -147,7 +147,7 @@ export default function App() {
 
       <main className="main">
         {view === "dashboard" && (
-          <Dashboard projects={projects} projectNames={projectNames} onGoto={goto} />
+          <Dashboard projects={projects} projectNames={projectNames} onGoto={goto} me={me} />
         )}
 
         {view === "projects" && editing === null && (

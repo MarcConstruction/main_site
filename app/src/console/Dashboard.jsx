@@ -7,7 +7,12 @@ const greet = () => {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 };
 
-const firstName = (email) => {
+/* The name set in the rail wins. Falling back to the email produced "Rmk"
+   from rmk@marcconstruction.in — a greeting should use the name a person
+   gave, not the one their mailbox happens to have. */
+const firstName = (name, email) => {
+  const given = String(name || "").trim().split(/\s+/)[0];
+  if (given) return given;
   const raw = (email || "").split("@")[0].split(/[._-]/)[0];
   return raw ? raw[0].toUpperCase() + raw.slice(1) : "there";
 };
@@ -23,7 +28,7 @@ const dayLabel = (iso) => {
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }).toUpperCase();
 };
 
-export default function Dashboard({ projects, projectNames, onGoto }) {
+export default function Dashboard({ projects, projectNames, onGoto, me }) {
   const [enq, setEnq] = useState(null);
   const [feed, setFeed] = useState([]);
   const [error, setError] = useState("");
@@ -50,7 +55,7 @@ export default function Dashboard({ projects, projectNames, onGoto }) {
           <span className="mono">
             {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
           </span>
-          <h1>{greet()}, {firstName(session.email())}</h1>
+          <h1>{greet()}, {firstName(me?.name, session.email())}</h1>
         </div>
         <a className="btn" href="/" target="_blank" rel="noopener noreferrer">View website</a>
         <button className="btn btn-primary" onClick={() => onGoto("projects", "new")}>+ Add project</button>
