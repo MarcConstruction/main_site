@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome.jsx";
 import { PROJECTS } from "../data/projects.js";
 import { card } from "../lib/img.js";
+import { reraLabel } from "../lib/rera.js";
 import FoldText from "../components/FoldText.jsx";
 
 /* Localities are read out of the content, not listed here. The console lets
@@ -110,7 +111,7 @@ export default function Projects() {
                     <h3>{p.name}</h3>
                     <p className="line">{p.line}</p>
                     <div className="foot">
-                      <span className="mono muted">{p.rera}</span>
+                      <span className="mono muted">{reraLabel(p.rera)}</span>
                       <span className="view">View →</span>
                     </div>
                   </div>

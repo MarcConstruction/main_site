@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome.jsx";
 import { PROJECTS, bySlug } from "../data/projects.js";
 import { card } from "../lib/img.js";
+import { reraLabel, isPending, PENDING_LABEL } from "../lib/rera.js";
 
 /* Defaults, used only where a project has none of its own. They describe how
    Marc builds generally, so they were right as a shared baseline — but they
@@ -115,10 +116,9 @@ const NEARBY = [
    project centred; until then each page shows its own exact pin. */
 const MY_MAP_ID = "";
 
-const Pending = ({ children }) => {
-  const pending = children === "To confirm" || children === "—";
-  return <b className={pending ? "pending" : undefined}>{children}</b>;
-};
+const Pending = ({ children }) => (
+  <b className={isPending(children) ? "pending" : undefined}>{children}</b>
+);
 
 export default function ProjectDetail() {
   const [p, setP] = useState(null);
@@ -222,8 +222,8 @@ export default function ProjectDetail() {
             <div className="cell"><span className="mono">CONFIGURATION</span><Pending>{p.configLabel}</Pending></div>
             <div className="cell"><span className="mono">POSSESSION</span><Pending>{p.possession}</Pending></div>
             <div className="cell"><span className="mono">TOWERS</span><Pending>{p.towers}</Pending></div>
-            <div className="cell"><span className="mono">CARPET RANGE</span><Pending>To confirm</Pending></div>
-            <div className="cell"><span className="mono">MAHARERA</span><Pending>{p.rera}</Pending></div>
+            <div className="cell"><span className="mono">CARPET RANGE</span><Pending>{PENDING_LABEL}</Pending></div>
+            <div className="cell"><span className="mono">MAHARERA</span><Pending>{reraLabel(p.rera)}</Pending></div>
           </div>
         </section>
 
@@ -472,10 +472,16 @@ export default function ProjectDetail() {
           <div className="wrap">
             <div>
               <span className="mono">MAHARERA REGISTRATION</span>
-              <h2>{p.rera === "To confirm" || p.rera === "—" ? "Registration number pending" : p.rera}</h2>
+              <h2>{reraLabel(p.rera)}</h2>
+              {/* Three different truths, and the page should tell whichever
+                  one applies rather than instructing a buyer to scan a code
+                  that is not on the page. */}
               <p>
-                Registered with the Maharashtra Real Estate Regulatory Authority. Scan the
-                code or verify the number directly on the MahaRERA portal before booking.
+                {isPending(p.rera)
+                  ? "Registration with the Maharashtra Real Estate Regulatory Authority is in progress. The number and its QR code appear here once the authority issues them."
+                  : p.qrUrl
+                    ? "Registered with the Maharashtra Real Estate Regulatory Authority. Scan the code or verify the number directly on the MahaRERA portal before booking."
+                    : "Registered with the Maharashtra Real Estate Regulatory Authority. Verify the number directly on the MahaRERA portal before booking."}
               </p>
               <div className="actions">
                 <a className="btn btn-primary" href="https://maharera.maharashtra.gov.in/" target="_blank" rel="noopener noreferrer">Verify on MahaRERA</a>

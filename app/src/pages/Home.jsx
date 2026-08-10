@@ -4,6 +4,7 @@ import ScrollExpand from "../components/ScrollExpand.jsx";
 import { Header, Footer, WhatsAppFab, ActionBar, Counter } from "../components/Chrome.jsx";
 import { PROJECTS, TESTIMONIALS } from "../data/projects.js";
 import { thumb, card, hero } from "../lib/img.js";
+import { reraLabel } from "../lib/rera.js";
 
 const WHY = [
   ["01", "On-time possession", "Committed dates in the agreement, and a regular progress update to every buyer."],
@@ -24,7 +25,7 @@ function ProjectCard({ p }) {
         <h3>{p.name}</h3>
         <p className="line">{p.line}</p>
         <div className="foot">
-          <span className="mono muted">{p.rera}</span>
+          <span className="mono muted">{reraLabel(p.rera)}</span>
           <span className="view">View →</span>
         </div>
       </div>
