@@ -67,7 +67,7 @@ const serialiseSpecs = (rows) =>
 const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
-  line: "", img: "", coords: "", description: "", price_band: "", specs: "",
+  line: "", img: "", coords: "", description: "", price_band: "", specs: "", carpet: "",
   amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], models: [], model_url: "", published: false
 };
 
@@ -92,12 +92,13 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const [planBusy, setPlanBusy] = useState(-1);
   const [newAmenity, setNewAmenity] = useState("");
   const [nearbyBusy, setNearbyBusy] = useState(false);
+  const [specRows, setSpecRows] = useState(() => parseSpecRows(BLANK.specs));
   const fileRef = useRef(null);
 
   useEffect(() => {
     if (id === "new") return;
     db(`projects?id=eq.${id}&select=*`)
-      .then((r) => setP(r[0] ?? null))
+      .then((r) => { setP(r[0] ?? null); setSpecRows(parseSpecRows(r[0]?.specs)); })
       .catch((e) => setError(e.message));
   }, [id]);
 
@@ -118,10 +119,12 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const toggleIn = (key, value) =>
     set({ [key]: p[key].includes(value) ? p[key].filter((v) => v !== value) : [...p[key], value] });
 
-  /* Rows are derived from the stored text on every render rather than held
-     as their own state, so the two cannot drift apart. */
-  const specRows = parseSpecRows(p.specs);
-  const writeSpecs = (rows) => set({ specs: serialiseSpecs(rows) });
+  /* Rows are held in state, not derived from p.specs on each render.
+     Deriving looked tidier but made "+ Add a specification" impossible: an
+     empty row serialises to nothing, so the text came back unchanged and the
+     new row never appeared. Text cannot represent a row you have not typed
+     into yet. Serialised on save instead. */
+  const writeSpecs = setSpecRows;
 
   /* Whatever has been chosen appears among the offered chips, so a custom
      amenity is not invisible the next time this project is opened. */
@@ -186,6 +189,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
          still has something to show. */
       model_url: models[0]?.url ?? null,
       videos: (p.videos || []).filter((vd) => vd.url?.trim()),
+      specs: serialiseSpecs(specRows),
       slug: p.slug || slugify(p.name),
       published: publish ?? p.published
     };
@@ -358,10 +362,23 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   </div>
                 </div>
 
-                <div className="field">
-                  <label htmlFor="f-price">Price band</label>
-                  <input className="input" id="f-price" value={p.price_band || ""}
-                    placeholder="Price on request" onChange={(e) => set({ price_band: e.target.value })} />
+                <div className="pair">
+                  <div className="field">
+                    <label htmlFor="f-price">Price band</label>
+                    <input className="input" id="f-price" value={p.price_band || ""}
+                      placeholder="Price on request" onChange={(e) => set({ price_band: e.target.value })} />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-carpet">Carpet range</label>
+                    <input className="input" id="f-carpet" value={p.carpet || ""}
+                      placeholder="620 – 1,180 sq ft"
+                      onChange={(e) => set({ carpet: e.target.value })} />
+                    <span className="mono" style={{ display: "block", marginTop: 6 }}>
+                      Shown in the facts row on the project page. Copy from the RERA
+                      carpet areas printed on the floor-plan sheets — leave it empty
+                      and it reads &ldquo;Updating soon&rdquo; rather than a guess.
+                    </span>
+                  </div>
                 </div>
 
                 <div className="field">

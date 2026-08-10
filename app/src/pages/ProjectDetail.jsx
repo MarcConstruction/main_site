@@ -242,7 +242,7 @@ export default function ProjectDetail() {
             <div className="cell"><span className="mono">CONFIGURATION</span><Pending>{p.configLabel}</Pending></div>
             <div className="cell"><span className="mono">POSSESSION</span><Pending>{p.possession}</Pending></div>
             <div className="cell"><span className="mono">TOWERS</span><Pending>{p.towers}</Pending></div>
-            <div className="cell"><span className="mono">CARPET RANGE</span><Pending>{PENDING_LABEL}</Pending></div>
+            <div className="cell"><span className="mono">CARPET RANGE</span><Pending>{p.carpet?.trim() || PENDING_LABEL}</Pending></div>
             <div className="cell"><span className="mono">MAHARERA</span><Pending>{reraLabel(p.rera)}</Pending></div>
           </div>
         </section>
