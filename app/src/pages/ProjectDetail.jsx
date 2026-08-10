@@ -3,6 +3,7 @@ import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome
 import { PROJECTS, bySlug } from "../data/projects.js";
 import { card } from "../lib/img.js";
 import { reraLabel, isPending, PENDING_LABEL } from "../lib/rera.js";
+import { DEFAULT_SPECS, DEFAULT_AMENITIES } from "../lib/defaults.js";
 
 /* Defaults, used only where a project has none of its own. They describe how
    Marc builds generally, so they were right as a shared baseline — but they
@@ -24,16 +25,6 @@ const parseSpecs = (text) =>
         ? [line.slice(0, at).trim().toUpperCase(), line.slice(at + 1).trim()]
         : ["", line];
     });
-
-const DEFAULT_SPECS = [
-  ["STRUCTURE", "RCC framed, earthquake-resistant design to IS 1893"],
-  ["FLOORING", "800×800 vitrified tiles; anti-skid in wet areas"],
-  ["KITCHEN", "Granite platform, stainless sink, glazed dado"],
-  ["DOORS", "Teak-finish main door; flush internal doors"],
-  ["WINDOWS", "Three-track powder-coated aluminium with mosquito net"],
-  ["ELECTRICAL", "Concealed copper wiring, modular switches, AC points"],
-  ["WATER", "Underground + overhead tanks, solar water heating provision"]
-];
 
 /* A filename is a poor caption but a better one than nothing, and it saves
    retyping for images that are already named sensibly. The console can
@@ -94,17 +85,6 @@ function VideoCover({ as: Tag, href, onClick, poster, label, len, caption }) {
     </Tag>
   );
 }
-
-const DEFAULT_AMENITIES = [
-  "Two automatic lifts per wing",
-  "Generator power backup, common areas & lifts",
-  "Landscaped garden & walking loop",
-  "Children's play area with soft flooring",
-  "CCTV surveillance, entry gate & lobbies",
-  "Covered parking, visitor bays",
-  "Community hall & society office",
-  "Rainwater harvesting"
-];
 
 /* Nearby landmarks come from the project, not from here. The six that used to
    live in this file were shown on every page and were not even right for the
@@ -182,7 +162,7 @@ export default function ProjectDetail() {
   /* A project's own specs and amenities win; the shared defaults fill in for
      the ones nobody has written yet. */
   const ownSpecs = parseSpecs(p.specs);
-  const specs = ownSpecs.length ? ownSpecs : DEFAULT_SPECS;
+  const specs = ownSpecs.length ? ownSpecs : DEFAULT_SPECS.map(({ k, v }) => [k, v]);
   const amenities = p.amenities?.length ? p.amenities : DEFAULT_AMENITIES;
   const gallery = galleryOf(p);
   const progress = p.progress || [];

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { db, upload, logActivity, triggerRebuild } from "./api.js";
 import { Back, Alert, Up, Box, Play, Doc, Pic } from "./Icons.jsx";
 import { suggestNearby } from "./nearby.js";
+import { DEFAULT_SPECS, DEFAULT_AMENITIES } from "../lib/defaults.js";
 
 const TABS = ["Details", "Media", "Specifications", "Compliance"];
 /* Starting suggestions only — the field is free text and the list below is
@@ -10,19 +11,6 @@ const SEED_LOCALITIES = ["Ahilyanagar", "Savedi", "Nalegaon", "Bhistabag", "Tara
 const STATUSES = ["Ongoing", "Completed", "Upcoming"];
 const TYPES = ["Residential", "Commercial", "Mixed-Use"];
 const CONFIGS = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "Shop", "Office"];
-/* Offered on every project. Not a closed set — anything typed in is kept and
-   appears alongside these next time. */
-const AMENITIES = [
-  "Two automatic lifts per wing",
-  "Generator power backup, common areas & lifts",
-  "Landscaped garden & walking loop",
-  "Children's play area with soft flooring",
-  "CCTV surveillance, entry gate & lobbies",
-  "Covered parking, visitor bays",
-  "Community hall & society office",
-  "Rainwater harvesting"
-];
-
 /* Offered when a project has no stages yet, so the shape is right and only
    the wording needs attention. */
 const STANDARD_STAGES = [
@@ -30,17 +18,6 @@ const STANDARD_STAGES = [
   { stage: "Slab work", state: "In progress" },
   { stage: "Blockwork & plaster", state: "" },
   { stage: "Finishing & handover", state: "" }
-];
-
-/* The same seven the project page falls back to. */
-const STANDARD_SPECS = [
-  { k: "STRUCTURE", v: "RCC framed, earthquake-resistant design to IS 1893" },
-  { k: "FLOORING", v: "800×800 vitrified tiles; anti-skid in wet areas" },
-  { k: "KITCHEN", v: "Granite platform, stainless sink, glazed dado" },
-  { k: "DOORS", v: "Teak-finish main door; flush internal doors" },
-  { k: "WINDOWS", v: "Three-track powder-coated aluminium with mosquito net" },
-  { k: "ELECTRICAL", v: "Concealed copper wiring, modular switches, AC points" },
-  { k: "WATER", v: "Underground + overhead tanks, solar water heating provision" }
 ];
 
 /* specs stays a single text column: the site already parses "Label: value"
@@ -128,7 +105,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
   /* Whatever has been chosen appears among the offered chips, so a custom
      amenity is not invisible the next time this project is opened. */
-  const amenityChoices = [...new Set([...AMENITIES, ...(p.amenities || [])])];
+  const amenityChoices = [...new Set([...DEFAULT_AMENITIES, ...(p.amenities || [])])];
   const addAmenity = () => {
     const a = newAmenity.trim();
     if (!a) return;
@@ -524,7 +501,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                     /* Without this the tab is an empty box that says nothing
                        about what the page expects. One click gives the standard
                        seven, which are then edited rather than invented. */
-                    <button className="btn btn-sm" onClick={() => writeSpecs(STANDARD_SPECS)}>
+                    <button className="btn btn-sm" onClick={() => writeSpecs(DEFAULT_SPECS)}>
                       Fill with Marc&rsquo;s standard specifications
                     </button>
                   )}
