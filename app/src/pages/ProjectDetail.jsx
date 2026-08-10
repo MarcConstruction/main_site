@@ -187,6 +187,9 @@ export default function ProjectDetail() {
   const gallery = galleryOf(p);
   const progress = p.progress || [];
   const nearby = p.nearby || [];
+  /* Undefined means the column has not been added yet, which must read as
+     "applies" -- the safe direction for a statutory disclosure. */
+  const reraApplies = p.reraApplicable !== false;
   /* modelUrl is the single tour this replaced. Reading it as a fallback means
      a deploy that lands before add-models.sql runs still shows the tour it
      already had, rather than nothing. */
@@ -243,7 +246,9 @@ export default function ProjectDetail() {
             <div className="cell"><span className="mono">POSSESSION</span><Pending>{p.possession}</Pending></div>
             <div className="cell"><span className="mono">TOWERS</span><Pending>{p.towers}</Pending></div>
             <div className="cell"><span className="mono">CARPET RANGE</span><Pending>{p.carpet?.trim() || PENDING_LABEL}</Pending></div>
-            <div className="cell"><span className="mono">MAHARERA</span><Pending>{reraLabel(p.rera)}</Pending></div>
+            {reraApplies && (
+              <div className="cell"><span className="mono">MAHARERA</span><Pending>{reraLabel(p.rera)}</Pending></div>
+            )}
           </div>
         </section>
 
@@ -521,6 +526,12 @@ export default function ProjectDetail() {
           </div>
         </section>
 
+        {/* Registration came in with the Act in 2017 and small plots fall
+            under the threshold, so a completed 2010 building has no number
+            and never will. Showing "Updating soon" forever reads as a builder
+            who has not got round to it rather than a rule that does not
+            apply, so the whole band goes. */}
+        {reraApplies && (
         <section className="rera on-dark">
           <div className="wrap">
             <div>
@@ -553,6 +564,7 @@ export default function ProjectDetail() {
             )}
           </div>
         </section>
+        )}
       </main>
 
       {lb > -1 && (

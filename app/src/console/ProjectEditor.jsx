@@ -67,7 +67,7 @@ const serialiseSpecs = (rows) =>
 const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
-  line: "", img: "", coords: "", description: "", price_band: "", specs: "", carpet: "",
+  line: "", img: "", coords: "", description: "", price_band: "", specs: "", carpet: "", rera_applicable: true,
   amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], models: [], model_url: "", published: false
 };
 
@@ -139,7 +139,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   /* The two things MahaRERA requires on a listing. Publish stays disabled
      until both are present — the database enforces the number, this also
      watches the QR image the law asks for. */
-  const pending = [
+  const pending = p.rera_applicable === false ? [] : [
     !p.rera?.trim() && "MahaRERA registration number",
     !p.qr_url?.trim() && "MahaRERA QR code image"
   ].filter(Boolean);
@@ -555,7 +555,30 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
 
             {tab === "Compliance" && (
               <>
-                <span className="mono legend">Compliance — required before publishing</span>
+                <span className="mono legend">Compliance</span>
+
+                <div className="rera-switch">
+                  <span className="switch">
+                    <button role="switch" type="button"
+                      aria-checked={p.rera_applicable !== false}
+                      aria-label="MahaRERA applies to this project"
+                      onClick={() => set({ rera_applicable: p.rera_applicable === false })} />
+                    <span className="lbl">
+                      {p.rera_applicable === false ? "Not a MahaRERA project" : "MahaRERA applies"}
+                    </span>
+                  </span>
+                  <p className="sub" style={{ color: "var(--muted)", margin: "8px 0 0" }}>
+                    {p.rera_applicable === false
+                      ? "The registration band and the number are hidden on the project page, and Publish no longer waits for them."
+                      : "Registration came in with the Act in 2017 and small plots fall under the threshold. Turn this off for a project that has no number and never will — an old completed building, for instance — rather than leaving it reading “Updating soon” forever."}
+                  </p>
+                </div>
+
+                {p.rera_applicable !== false && (
+                <>
+                <span className="mono legend" style={{ marginTop: 26 }}>
+                  Required before publishing
+                </span>
                 <div className="field">
                   <label htmlFor="f-rera">MahaRERA registration number *</label>
                   <input className="input" id="f-rera" value={p.rera || ""} placeholder="P522000…"
@@ -579,6 +602,8 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                       if (f) set({ qr_url: await upload(f).catch((err) => (setError(err.message), p.qr_url)) });
                     }} />
                 </div>
+                </>
+                )}
               </>
             )}
 

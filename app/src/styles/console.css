@@ -373,3 +373,6 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
 /* The chosen network, shown beside the link so a typo is visible before it
    reaches the footer */
 .social-preview { display: flex; align-items: center; gap: 9px; color: var(--muted); }
+
+/* The MahaRERA applies / does not apply switch */
+.rera-switch { padding: 16px 18px; border: 1px solid var(--line); background: var(--panel); }

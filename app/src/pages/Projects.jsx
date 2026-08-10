@@ -111,7 +111,7 @@ export default function Projects() {
                     <h3>{p.name}</h3>
                     <p className="line">{p.line}</p>
                     <div className="foot">
-                      <span className="mono muted">{reraLabel(p.rera)}</span>
+                      <span className="mono muted">{p.reraApplicable === false ? "" : reraLabel(p.rera)}</span>
                       <span className="view">View →</span>
                     </div>
                   </div>
