@@ -158,6 +158,5 @@ number. Add staff by hand under Authentication → Users.
 | CMS login | Needs a Git repo + Netlify Identity/Git Gateway enabled (see Admin above) |
 | All-sites map | `ProjectDetail.jsx` — set `MY_MAP_ID` from a Google My Map (import `../marc-sites.csv`) |
 | 3D model, plan/brochure/RERA downloads | buttons are inert |
-| Leadership portraits, 2 of 3 testimonial photos | placeholders |
 
 `npm audit` is clean; keep it that way — check before adding a dependency.

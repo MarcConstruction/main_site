@@ -4,10 +4,18 @@ import { ERAS } from "../data/projects.js";
 import { card } from "../lib/img.js";
 
 const LEADERS = [
-  ["FOUNDER & MANAGING DIRECTOR", "Mr. Makarand Madhav Kulkarni",
-   "Civil engineer by training, on site since 1987. Signs off every structural drawing and still walks each project before slab-pour."],
-  ["DIRECTOR", "Mr. Rohan Makarand Kulkarni",
-   "Second generation. Leads design, RERA compliance and the customer side, from first enquiry to possession letter."]
+  {
+    role: "FOUNDER & MANAGING DIRECTOR",
+    name: "Mr. Makarand Madhav Kulkarni",
+    photo: "/assets/leader-makarand.png",
+    bio: "Civil engineer by training, on site since 1987. Signs off every structural drawing and still walks each project before slab-pour."
+  },
+  {
+    role: "DIRECTOR",
+    name: "Mr. Rohan Makarand Kulkarni",
+    photo: "/assets/leader-rohan.png",
+    bio: "Second generation. Leads design, RERA compliance and the customer side, from first enquiry to possession letter."
+  }
 ];
 
 const REGS = [
@@ -68,9 +76,15 @@ export default function About() {
         <section className="wrap sec">
           <div className="sec-head"><span className="mono kicker">02</span><h2>Leadership</h2></div>
           <div className="leaders">
-            {LEADERS.map(([role, name, bio]) => (
+            {LEADERS.map(({ role, name, photo, bio }) => (
               <div className="blueprint leader" key={name}>
-                <div className="shot"><span className="slot">{name}</span></div>
+                {/* The name placeholder stays for anyone without a portrait
+                    yet, rather than leaving an empty frame. */}
+                <div className="shot">
+                  {photo
+                    ? <img src={card(photo)} alt={name} loading="lazy" />
+                    : <span className="slot">{name}</span>}
+                </div>
                 <div className="body">
                   <span className="mono">{role}</span>
                   <h3>{name}</h3>

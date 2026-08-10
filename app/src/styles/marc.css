@@ -787,6 +787,10 @@ select.input { appearance: none; background-image: none; }
 .leaders { display: grid; grid-template-columns: 1fr 1fr; gap: 38px; }
 .leader { display: grid; grid-template-columns: 276px 1fr; }
 .leader .shot { position: relative; height: 336px; }
+/* Portraits are 5:4 landscape in a 276x336 portrait frame, so they are
+   cropped to fill rather than letterboxed — faces sit in the upper half, so
+   the crop is anchored toward the top rather than centre. */
+.leader .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
 .leader .body { padding: 31px; }
 .leader .mono { display: block; color: var(--color-accent-700); margin-bottom: 12px; }
 .leader h3 { font-size: 36px; line-height: 1.05; margin-bottom: 14px; }
