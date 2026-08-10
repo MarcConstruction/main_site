@@ -80,7 +80,7 @@ export default function Home() {
                 <p className="tagline" lang="mr">रचनात्मक | समयबद्ध | नवनिर्मिती</p>
                 <h1>Homes Ahilyanagar has trusted since 1987</h1>
                 <p className="lede">
-                  Marc Construction has 100+ delivered addresses across one district,
+                  Marc Construction has 100+ delivered addresses across the city,
                   every one on the register.
                 </p>
                 <div className="hero-actions">
@@ -152,7 +152,7 @@ export default function Home() {
             useWindowScroll
             src={hero("/assets/bluebell-elevation.png")}
             alt="Bluebell, Ahilyanagar, elevation"
-            title="Thirty-nine years in one district"
+            title="Thirty-nine years in one city"
             scrollHint="SCROLL"
             startWidth={46}
             startHeight={62}

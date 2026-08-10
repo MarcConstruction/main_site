@@ -30,7 +30,7 @@ export default function About() {
           <div className="about-head">
             <div>
               <span className="mono kicker">ABOUT MARC · <span lang="mr">रचनात्मक | समयबद्ध | नवनिर्मिती</span></span>
-              <h1>A builder the district has watched for 39 years</h1>
+              <h1>A developer the city has watched for 39 years</h1>
               <p>
                 Marc Construction has built in one city since 1987. We are answerable to
                 the people we meet at the market, which is a stricter standard than any

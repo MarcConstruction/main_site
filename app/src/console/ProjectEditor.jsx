@@ -412,7 +412,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   Suggestions come from OpenStreetMap and are measured in a straight
                   line from the map pin, not along the road.{" "}
                   <strong>Check every one before publishing</strong> — a distance on a
-                  builder&rsquo;s page is a claim buyers act on.
+                  developer&rsquo;s page is a claim buyers act on.
                 </p>
 
                 {(p.nearby || []).map((n, i) => (

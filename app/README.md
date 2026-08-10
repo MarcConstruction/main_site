@@ -13,7 +13,7 @@ Deploys to Netlify from `netlify.toml` at the repo root — base `app`, publish
 ## Why multi-page, not an SPA
 
 `vite.config.js` declares five HTML entries. Each route is a real document, so
-each page is independently crawlable — which is the whole point for a builder's
+each page is independently crawlable — which is the whole point for a developer's
 marketing site. It also means **no router dependency**: every `react-router`
 version currently in range carries high-severity advisories, and dropping it
 took the audit from 2 high to **0 vulnerabilities**.

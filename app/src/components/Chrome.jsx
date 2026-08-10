@@ -84,7 +84,7 @@ export function Footer() {
           {/* With the wordmark and the trading names rather than under the
               phone number: these are the company's own accounts, not another
               way to reach the office. An empty list renders nothing — a row
-              of dead icons says a builder has no presence anywhere. */}
+              of dead icons says a developer has no presence anywhere. */}
           {SOCIALS.length > 0 && (
             <div className="socials">
               {SOCIALS.map((s) => (

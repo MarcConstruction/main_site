@@ -37,7 +37,7 @@ const prettify = (name) =>
 
 /* Only this project's own images, and no shared fallback.
    There used to be one — six Rainflower photographs — which meant Bluebell's
-   gallery showed a building that was not Bluebell. For a builder selling
+   gallery showed a building that was not Bluebell. For a developer selling
    flats, a picture of the wrong property is worse than no picture, so an
    empty gallery hides the section instead.
 
@@ -310,7 +310,7 @@ export default function ProjectDetail() {
                 ))}
               </div>
               {/* Plays in place rather than sending the visitor to YouTube,
-                  where the related-video wall is full of other builders.
+                  where the related-video wall is full of other developers.
 
                   The iframe is only created on click. YouTube's embed pulls
                   roughly half a megabyte of player before anyone presses play,
@@ -508,7 +508,7 @@ export default function ProjectDetail() {
 
         {/* Registration came in with the Act in 2017 and small plots fall
             under the threshold, so a completed 2010 building has no number
-            and never will. Showing "Updating soon" forever reads as a builder
+            and never will. Showing "Updating soon" forever reads as a developer
             who has not got round to it rather than a rule that does not
             apply, so the whole band goes. */}
         {reraApplies && (

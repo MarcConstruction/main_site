@@ -12,7 +12,7 @@
      - OSM coverage in Ahilyanagar is contributed, not surveyed. Names are
        sometimes missing, sometimes stale.
 
-   A builder quoting distances is making a claim buyers rely on, so the
+   A developer quoting distances is making a claim buyers rely on, so the
    console fills the rows in and a human corrects them. */
 
 const CATEGORIES = [
