@@ -1222,3 +1222,12 @@ button.video {
   .why-points { grid-template-columns: 1fr 1fr; gap: 18px; }
   .why-point p { display: none; }
 }
+/* Social links in the footer. Sized to the touch target rather than the
+   glyph, so a thumb on a phone hits the link and not the gap beside it. */
+.socials { display: flex; gap: 6px; margin-top: 16px; }
+.socials a {
+  width: 40px; height: 40px; display: grid; place-items: center;
+  color: var(--color-neutral-300); border: 1px solid var(--on-dark-border-soft);
+  border-radius: 50%; transition: color .18s ease, border-color .18s ease;
+}
+.socials a:hover { color: var(--on-dark); border-color: var(--on-dark-border); }

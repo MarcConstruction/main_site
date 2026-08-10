@@ -369,3 +369,7 @@ table.grid tbody tr.drop-target td { box-shadow: inset 0 2px 0 var(--accent); }
   .login-brand { min-height: 220px; }
   .view, .topbar, .tabs, .banner { padding-left: 18px; padding-right: 18px; }
 }
+
+/* The chosen network, shown beside the link so a typo is visible before it
+   reaches the footer */
+.social-preview { display: flex; align-items: center; gap: 9px; color: var(--muted); }

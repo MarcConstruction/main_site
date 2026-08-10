@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { db, session, AuthError } from "./api.js";
-import { Grid, Home, Mail, Out } from "./Icons.jsx";
+import { Grid, Home, Mail, Cog, Out } from "./Icons.jsx";
 import Login from "./Login.jsx";
 import Dashboard from "./Dashboard.jsx";
 import Projects from "./Projects.jsx";
 import ProjectEditor from "./ProjectEditor.jsx";
 import Enquiries from "./Enquiries.jsx";
+import Settings from "./Settings.jsx";
 
 const NAV = [
   ["dashboard", "Dashboard", Grid],
   ["projects", "Projects", Home],
-  ["enquiries", "Enquiries", Mail]
+  ["enquiries", "Enquiries", Mail],
+  ["settings", "Contact & social", Cog]
 ];
 
 const initials = (email) =>
@@ -159,6 +161,8 @@ export default function App() {
         {view === "enquiries" && (
           <Enquiries projectNames={projectNames} onCount={setNewCount} />
         )}
+
+        {view === "settings" && <Settings />}
       </main>
     </div>
   );

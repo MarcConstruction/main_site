@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { PHONE, PHONE_DISPLAY, WHATSAPP, LEGAL } from "../data/projects.js";
+import { PHONE, PHONE_DISPLAY, WHATSAPP, LEGAL, EMAIL, SOCIALS } from "../data/projects.js";
+import { SocialIcon, networkFor } from "../lib/social.jsx";
 
 /* Shared page furniture: header, footers, the WhatsApp button and the pinned
    mobile action bar. Plain <a href> between pages — this is a multi-page build,
@@ -100,8 +101,21 @@ export function Footer() {
           <p className="footer-lines">
             <a href={`tel:${PHONE}`}>{PHONE_DISPLAY}</a><br />
             <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">WhatsApp</a><br />
-            marcconstruction.in
+            <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
           </p>
+
+          {/* Only the links that exist. An empty row of icons says a builder
+              has no presence anywhere, which is worse than saying nothing. */}
+          {SOCIALS.length > 0 && (
+            <div className="socials">
+              {SOCIALS.map((s) => (
+                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer"
+                  aria-label={s.label || networkFor(s.url)} title={s.label || networkFor(s.url)}>
+                  <SocialIcon url={s.url} />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="footer-legal">

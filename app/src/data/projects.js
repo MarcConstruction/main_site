@@ -27,3 +27,6 @@ export const PHONE = site.phone;
 export const PHONE_DISPLAY = site.phoneDisplay;
 export const WHATSAPP = site.whatsapp;
 export const LEGAL = site.legal;
+export const EMAIL = site.email || "info@marcconstruction.in";
+export const ADDRESS = site.address || "";
+export const SOCIALS = site.socials || [];

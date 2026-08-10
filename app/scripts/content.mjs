@@ -74,3 +74,41 @@ const projects = rows.map(({ config_label, model_url, price_band, qr_url, ...r }
 
 await writeFile(OUT, JSON.stringify(projects, null, 2) + "\n");
 console.log(`  content.mjs: wrote ${projects.length} published projects`);
+
+/* Contact details and social links, edited on the console's Contact & social
+   screen. Same shape src/content/site.json has always had, so Chrome.jsx and
+   every Call button carry on unchanged. A failure here leaves the committed
+   file in place: a stale phone number is bad, a missing one is worse. */
+const SITE_OUT = new URL("../src/content/site.json", import.meta.url);
+
+try {
+  const r = await fetch(
+    `${SB_URL}/rest/v1/site?select=phone,phone_display,whatsapp,email,address,socials,legal&id=eq.1`,
+    { headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}` } }
+  );
+  if (!r.ok) throw new Error(`Supabase returned ${r.status}`);
+
+  const [site] = await r.json();
+  if (!site) throw new Error("no site row");
+
+  await writeFile(
+    SITE_OUT,
+    JSON.stringify(
+      {
+        phone: site.phone,
+        phoneDisplay: site.phone_display,
+        whatsapp: site.whatsapp,
+        email: site.email,
+        address: site.address,
+        socials: site.socials ?? [],
+        legal: site.legal
+      },
+      null,
+      2
+    ) + "\n"
+  );
+  console.log(`  content.mjs: wrote site details, ${(site.socials ?? []).length} social links`);
+} catch (err) {
+  console.warn(`\n  content.mjs: site details unavailable — ${err.message}`);
+  console.warn("  Keeping the committed src/content/site.json.\n");
+}
