@@ -65,7 +65,7 @@ export default function Projects({ counts, onOpen, onChanged }) {
   /* Drag to reorder. HTML5 drag-and-drop rather than a library: rows are a
      single flat list, and dnd-kit would be 40 kB to move one integer. */
   const drop = async (target) => {
-    setOver(null);
+    setOver(null); setError(""); setNote("");
     if (!drag || drag.id === target.id) return setDrag(null);
 
     const list = [...rows];
@@ -78,15 +78,27 @@ export default function Projects({ counts, onOpen, onChanged }) {
     setDrag(null);
 
     try {
-      /* One upsert with the whole list, not one PATCH per row: reordering ten
-         projects should be one request, and a partial failure mid-loop would
-         leave the running order scrambled. */
-      await db("projects?on_conflict=id", {
+      /* One call for the whole list, not a PATCH per row: a failure halfway
+         through a loop would leave the running order scrambled with no clean
+         way back.
+
+         An upsert looked like the way to do that, but PostgREST sends it as
+         INSERT ... ON CONFLICT and `id` is GENERATED ALWAYS, so Postgres
+         rejected it before reaching the conflict clause. The function does
+         the same job as a single UPDATE. */
+      await db("rpc/reorder_projects", {
         method: "POST",
-        headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
-        body: renumbered.map(({ id, sort_order }) => ({ id, sort_order }))
+        body: { items: renumbered.map(({ id, sort_order }) => ({ id, sort_order })) }
       });
       logActivity("Project order changed");
+
+      /* The order is what the site shows, so it has to rebuild -- same as the
+         Live switch. Without this the console and the website disagreed until
+         something else happened to publish. */
+      const r = await triggerRebuild();
+      setNote(r.ok
+        ? "Order saved. The website is rebuilding — about a minute."
+        : `Order saved, but the website was not rebuilt (${r.reason}). It will update on the next deploy.`);
     } catch (e) {
       setError(e.message);
       load();
