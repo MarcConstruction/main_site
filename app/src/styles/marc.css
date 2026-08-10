@@ -1243,3 +1243,14 @@ button.video {
 .brochure-card .sub { color: var(--color-neutral-600); margin-bottom: 22px; }
 .brochure-close { position: absolute; top: 14px; right: 14px; }
 .brochure-card .sent { padding: 20px 0; }
+
+/* The collage is 4:3 and every project tile in it is the point, so it is
+   fitted whole rather than cropped to fill — cover was cutting off the top
+   and bottom rows entirely.
+
+   The letterbox takes the collage's own navy, sampled from the file itself
+   (#0f2034), so the bars read as part of the artwork rather than as a gap.
+   Scoped to this section: object-fit: cover is the right default for the
+   component anywhere it shows a single building. */
+.why-expand .scroll-expand__media { object-fit: contain; }
+.why-expand .scroll-expand__frame { background: #0f2034; }
