@@ -73,10 +73,15 @@
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
+  /* Sits low rather than dead centre: the artwork behind it carries the mark
+     in the middle, and a centred line lands straight across it. Bottom-aligned
+     with a viewport-height offset, not a percentage — percentage padding
+     resolves against WIDTH even on the top and bottom edges, which on a wide
+     frame throws the line far further down than intended. */
+  align-items: flex-end;
   justify-content: center;
   margin: 0;
-  padding: 0 6%;
+  padding: 0 6% clamp(24px, 9vh, 104px);
   text-align: center;
   font-size: var(--se-title-size);
   font-weight: 700;

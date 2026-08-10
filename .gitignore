@@ -12,6 +12,7 @@ app/public/assets/hero/
 # build never reads (Netlify builds `app/` only). Kept out so clones and every
 # CMS commit stay small. Back these up outside the repo.
 project/
+photos/
 *.docx
 
 # local env — the Supabase anon key is public by design, but keep the habit

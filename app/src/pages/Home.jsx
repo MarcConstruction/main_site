@@ -150,8 +150,8 @@ export default function Home() {
         <section className="why-expand">
           <ScrollExpand
             useWindowScroll
-            src={hero("/assets/bluebell-elevation.png")}
-            alt="Bluebell, Ahilyanagar, elevation"
+            src={hero("/assets/marc-collage.jpg")}
+            alt="Marc Construction projects around the company mark"
             title="Thirty-nine years in one city"
             scrollHint="SCROLL"
             startWidth={46}
@@ -164,7 +164,7 @@ export default function Home() {
             mediaZoom={1}
             scrollDistance={1.1}
             holdDistance={0.3}
-            overlayScrim={0.5}
+            overlayScrim={0.38}
           />
         </section>
 
