@@ -121,7 +121,7 @@ export default function Home() {
             <div className="ledger-row">
               <div className="fig"><b><Counter to={39} /></b><span className="mono">YEARS</span></div>
               <div className="fig"><b><Counter to={100} suffix="+" /></b><span className="mono">DELIVERED</span></div>
-              <div className="fig"><b><Counter to={3000} suffix="+" /></b><span className="mono">FAMILIES HOUSED</span></div>
+              <div className="fig"><b><Counter to={1000} suffix="+" /></b><span className="mono">FAMILIES HOUSED</span></div>
               <div className="creds">
                 <span className="mono">CREDAI MEMBER</span>
                 <span className="mono">ISO 9001</span>

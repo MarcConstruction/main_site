@@ -98,7 +98,7 @@ export default function About() {
             <div className="bignums">
               <div><b>39</b><span className="mono">YEARS OF BUILDING</span></div>
               <div><b>100+</b><span className="mono">PROJECTS DELIVERED</span></div>
-              <div><b>3,000+</b><span className="mono">FAMILIES HOUSED</span></div>
+              <div><b>1,000+</b><span className="mono">FAMILIES HOUSED</span></div>
               <div><b>5</b><span className="mono">SITES UNDER CONSTRUCTION</span></div>
             </div>
           </div>
