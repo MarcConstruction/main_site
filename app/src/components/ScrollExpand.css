@@ -70,18 +70,26 @@
 }
 
 .scroll-expand__title {
+  /* Offset from the top, not the bottom.
+
+     The title is a SIBLING of the frame, and the frame is clipped to the
+     middle band of the stage — inset 21% top and bottom while closed. So
+     `inset: 0` spans the full stage, and bottom-aligning parks the line below
+     the visible panel entirely, which is what it did.
+
+     64% of the stage sits under the mark and comfortably inside the clip,
+     which is the state the title is legible in — it fades out as the frame
+     opens. A percentage `top` resolves against the containing block's HEIGHT,
+     unlike percentage padding, so this behaves the same at any width. */
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 64%;
   display: flex;
-  /* Sits low rather than dead centre: the artwork behind it carries the mark
-     in the middle, and a centred line lands straight across it. Bottom-aligned
-     with a viewport-height offset, not a percentage — percentage padding
-     resolves against WIDTH even on the top and bottom edges, which on a wide
-     frame throws the line far further down than intended. */
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
   margin: 0;
-  padding: 0 6% clamp(24px, 9vh, 104px);
+  padding: 0 6%;
   text-align: center;
   font-size: var(--se-title-size);
   font-weight: 700;
