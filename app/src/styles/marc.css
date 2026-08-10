@@ -1253,4 +1253,34 @@ button.video {
    Scoped to this section: object-fit: cover is the right default for the
    component anywhere it shows a single building. */
 .why-expand .scroll-expand__media { object-fit: contain; }
-.why-expand .scroll-expand__frame { background: #0f2034; }
+
+/* Black, because the film below covers the artwork and the letterbox bars
+   alike — a coloured ground would make the bars a different shade from the
+   filmed image. */
+.why-expand .scroll-expand__frame { background: #0b0b0c; }
+
+/* The film and the mark, in one layer inside the frame so both clip with it
+   as the panel opens. Background layers paint front to back, so the wordmark
+   sits above the black. Sized against the frame, not in pixels, so it holds
+   its proportion while the frame grows.
+
+   55% is enough to carry the mark and the line beneath it over renders that
+   are mostly bright sky, without flattening the buildings into silhouettes. */
+.why-expand .scroll-expand__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    url("/assets/marc-wordmark.png") center 44% / min(440px, 42%) no-repeat,
+    rgba(0, 0, 0, 0.55);
+}
+
+/* Above the film, and in paper rather than gold: the line sits over darkened
+   photographs now, not a flat navy panel. */
+.why-expand .scroll-expand__title {
+  z-index: 3;
+  color: var(--on-dark);
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.6);
+}

@@ -150,8 +150,8 @@ export default function Home() {
         <section className="why-expand">
           <ScrollExpand
             useWindowScroll
-            src={hero("/assets/marc-collage.jpg")}
-            alt="Marc Construction projects around the company mark"
+            src={hero("/assets/marc-projects.jpg")}
+            alt="A grid of Marc Construction project renders"
             title="Thirty-nine years in one city"
             scrollHint="SCROLL"
             startWidth={46}
