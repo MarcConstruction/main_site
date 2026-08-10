@@ -68,7 +68,7 @@ const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
   line: "", img: "", coords: "", description: "", price_band: "", specs: "",
-  amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], model_url: "", published: false
+  amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], models: [], model_url: "", published: false
 };
 
 const slugify = (s) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -164,11 +164,15 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
       setSaving(false);
       return;
     }
-    /* Same "" problem as coords: the column refuses anything that is not
-       null or an https URL, and an untouched field sends "". */
-    const model_url = (p.model_url || "").trim() || null;
-    if (model_url && !/^https:\/\//.test(model_url)) {
-      setError("The 3D tour link must start with https:// — an http one is blocked by the browser as mixed content and the panel would just be blank.");
+    /* Drop rows that were added and never filled in, then insist on https:
+       the browser blocks a plain http tour as mixed content and the panel
+       renders blank with the reason only in its console. */
+    const models = (p.models || [])
+      .map((m) => ({ label: (m.label || "").trim(), url: (m.url || "").trim() }))
+      .filter((m) => m.url);
+    const badModel = models.find((m) => !/^https:\/\//.test(m.url));
+    if (badModel) {
+      setError(`The 3D tour link${badModel.label ? ` for ${badModel.label}` : ""} must start with https:// — an http one is blocked by the browser as mixed content and the panel would just be blank.`);
       setSaving(false);
       return;
     }
@@ -176,7 +180,11 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
     const body = {
       ...p,
       coords,
-      model_url,
+      models,
+      /* Keeps the old single-tour column consistent with the first tour, so
+         its https CHECK still holds and a deploy landing before the migration
+         still has something to show. */
+      model_url: models[0]?.url ?? null,
       videos: (p.videos || []).filter((vd) => vd.url?.trim()),
       slug: p.slug || slugify(p.name),
       published: publish ?? p.published
@@ -682,23 +690,46 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   + Add a video
                 </button>
 
-                <span className="mono legend" style={{ marginTop: 30 }}>3D walkthrough</span>
-                <div className="field">
-                  <label htmlFor="f-model">Link to the 3D tour</label>
-                  <input className="input" id="f-model" value={p.model_url || ""}
-                    placeholder="https://…/index.html"
-                    onChange={(e) => set({ model_url: e.target.value })} />
-                  <span className="mono" style={{ display: "block", marginTop: 6 }}>
-                    Must start with https — the site is served over https and a plain
-                    http tour is blocked by the browser as mixed content. Leave empty
-                    and the 3D section is hidden rather than showing a dead button.
-                  </span>
-                </div>
-                {p.model_url && (
-                  <a className="btn btn-sm" href={p.model_url} target="_blank" rel="noopener noreferrer">
-                    Open the tour to check it
-                  </a>
-                )}
+                <span className="mono legend" style={{ marginTop: 30 }}>3D walkthroughs</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  One per configuration if you have them — a 2 BHK tour and a 3 BHK
+                  tour become tabs on the page, exactly like floor plans. Links must
+                  start with <strong>https</strong>: the site is served over https and
+                  the browser blocks a plain http tour as mixed content, leaving a
+                  blank panel. No tours, no 3D section.
+                </p>
+
+                {(p.models || []).map((m, i) => {
+                  const bad = m.url?.trim() && !/^https:\/\//.test(m.url.trim());
+                  return (
+                    <div className="spec-row" key={i}>
+                      <input className="input" value={m.label || ""} placeholder="3 BHK"
+                        aria-label={`Tour ${i + 1} label`}
+                        onChange={(e) => set({ models: p.models.map((x, j) => j === i ? { ...x, label: e.target.value } : x) })} />
+                      <div>
+                        <input className="input" value={m.url || ""} placeholder="https://…/index.html"
+                          aria-label={`Tour ${i + 1} link`}
+                          onChange={(e) => set({ models: p.models.map((x, j) => j === i ? { ...x, url: e.target.value } : x) })} />
+                        {bad && (
+                          <span className="mono" style={{ display: "block", marginTop: 6, color: "var(--danger)" }}>
+                            Must start with https://
+                          </span>
+                        )}
+                        {m.url?.trim() && !bad && (
+                          <a className="mono" style={{ display: "inline-block", marginTop: 6 }}
+                            href={m.url} target="_blank" rel="noopener noreferrer">Open it to check</a>
+                        )}
+                      </div>
+                      <button className="btn btn-sm danger"
+                        onClick={() => set({ models: p.models.filter((_, j) => j !== i) })}>Remove</button>
+                    </div>
+                  );
+                })}
+
+                <button className="btn btn-sm" style={{ marginTop: 12 }}
+                  onClick={() => set({ models: [...(p.models || []), { label: "", url: "" }] })}>
+                  + Add a 3D tour
+                </button>
               </>
             )}
           </div>

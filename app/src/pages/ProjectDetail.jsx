@@ -134,6 +134,7 @@ export default function ProjectDetail() {
   const [p, setP] = useState(null);
   const [vid, setVid] = useState(0);
   const [model, setModel] = useState(false);
+  const [modelIdx, setModelIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [plan, setPlan] = useState(0);
   const [lb, setLb] = useState(-1);
@@ -186,6 +187,13 @@ export default function ProjectDetail() {
   const gallery = galleryOf(p);
   const progress = p.progress || [];
   const nearby = p.nearby || [];
+  /* modelUrl is the single tour this replaced. Reading it as a fallback means
+     a deploy that lands before add-models.sql runs still shows the tour it
+     already had, rather than nothing. */
+  const models = p.models?.length
+    ? p.models
+    : (p.modelUrl ? [{ label: p.configLabel || "3D walkthrough", url: p.modelUrl }] : []);
+  const tour = models[Math.min(modelIdx, Math.max(models.length - 1, 0))] || null;
   const q = encodeURIComponent(
     p.coords || (p.locality === "Ahilyanagar" ? "Ahmednagar, Maharashtra, India"
       : `${p.locality}, Ahmednagar, Maharashtra, India`)
@@ -242,30 +250,50 @@ export default function ProjectDetail() {
         {/* Only shown when the project actually has a model. The button used
             to be inert on every page, which promises something the site
             cannot deliver. */}
-        {p.modelUrl && (
+        {models.length > 0 && (
           <section className="wrap sec">
-            <div className="sec-head"><span className="mono kicker">01</span><h2>Walk the building in 3D</h2></div>
+            <div className="sec-head">
+              <span className="mono kicker">01</span><h2>Walk the building in 3D</h2>
+              {models.length > 1 && <span className="note">One tour per configuration.</span>}
+            </div>
+
+            {/* Tabs only where there is more than one, matching floor plans. */}
+            {models.length > 1 && (
+              <div className="tabrow" role="tablist" aria-label="3D tour">
+                {models.map((m, i) => (
+                  <button key={`${m.url}-${i}`} type="button" className="chip" role="tab"
+                    aria-selected={modelIdx === i}
+                    /* Close the running tour when switching, or the previous
+                       one keeps streaming behind the new tab. */
+                    onClick={() => { setModelIdx(i); setModel(false); }}>
+                    {m.label || `Tour ${i + 1}`}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="blueprint mediabox">
               {model ? (
                 /* Loaded on click, never on page load: these tours pull many
                    megabytes of textures and would otherwise cost every visitor
                    who never presses the button. */
-                <iframe className="shot model-frame" src={p.modelUrl}
-                  title={`${p.name} 3D walkthrough`} allow="fullscreen; xr-spatial-tracking"
-                  loading="lazy" />
+                <iframe className="shot model-frame" src={tour.url}
+                  title={`${p.name} ${tour.label || ""} 3D walkthrough`.replace(/\s+/g, " ")}
+                  allow="fullscreen; xr-spatial-tracking" loading="lazy" />
               ) : (
                 <div className="shot">
-                  <img src={card(p.img || "/assets/rainflower-aerial.png")}
-                    alt={`${p.name} 3D model`} loading="lazy" />
+                  <img src={card(p.img)} alt={`${p.name} 3D model`} loading="lazy" />
                 </div>
               )}
               <div className="bar">
                 {model ? (
-                  <a className="btn btn-secondary btn-nav" href={p.modelUrl}
+                  <a className="btn btn-secondary btn-nav" href={tour.url}
                     target="_blank" rel="noopener noreferrer">Open full screen</a>
                 ) : (
                   <button type="button" className="btn btn-primary btn-nav"
-                    onClick={() => setModel(true)}>Launch 3D model</button>
+                    onClick={() => setModel(true)}>
+                    Launch {models.length > 1 && tour.label ? tour.label : "3D"} model
+                  </button>
                 )}
                 <span className="mono spacer">DRAG TO LOOK AROUND · SCROLL TO ZOOM</span>
               </div>
