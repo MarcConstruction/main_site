@@ -1234,3 +1234,12 @@ button.video {
   border-radius: 50%; transition: color .18s ease, border-color .18s ease;
 }
 .socials a:hover { color: var(--on-dark); border-color: var(--on-dark-border); }
+
+/* Brochure dialog. Reuses the lightbox scrim so the page behind it dims the
+   same way it does for the gallery. */
+.brochure-modal { display: grid; place-items: center; padding: 24px; overflow-y: auto; }
+.brochure-card { position: relative; width: min(520px, 100%); padding: 34px; background: var(--color-bg); }
+.brochure-card h2 { font-size: 30px; margin: 10px 0 8px; }
+.brochure-card .sub { color: var(--color-neutral-600); margin-bottom: 22px; }
+.brochure-close { position: absolute; top: 14px; right: 14px; }
+.brochure-card .sent { padding: 20px 0; }

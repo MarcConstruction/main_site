@@ -4,6 +4,7 @@ import { PROJECTS, bySlug } from "../data/projects.js";
 import { card } from "../lib/img.js";
 import { reraLabel, isPending, PENDING_LABEL } from "../lib/rera.js";
 import { DEFAULT_SPECS, DEFAULT_AMENITIES } from "../lib/defaults.js";
+import BrochureDialog from "../components/BrochureDialog.jsx";
 
 /* Defaults, used only where a project has none of its own. They describe how
    Marc builds generally, so they were right as a shared baseline — but they
@@ -118,6 +119,7 @@ export default function ProjectDetail() {
   const [playing, setPlaying] = useState(false);
   const [plan, setPlan] = useState(0);
   const [lb, setLb] = useState(-1);
+  const [wantBrochure, setWantBrochure] = useState(false);
 
   useEffect(() => {
     const slug = new URLSearchParams(window.location.search).get("p");
@@ -211,7 +213,13 @@ export default function ProjectDetail() {
                     </p>
                   </div>
                   <div className="actions">
-                    <a className="btn btn-secondary btn-on-dark" href="/contact.html">Download brochure</a>
+                    {/* Only offered when there is a file. It used to point at
+                        the contact page and deliver nothing, which is a
+                        button that lies about what it does. */}
+                    {p.brochureUrl && (
+                      <button type="button" className="btn btn-secondary btn-on-dark"
+                        onClick={() => setWantBrochure(true)}>Download brochure</button>
+                    )}
                     <a className="btn btn-primary" href="/contact.html">Enquire</a>
                   </div>
                 </div>
@@ -546,6 +554,10 @@ export default function ProjectDetail() {
         </section>
         )}
       </main>
+
+      {wantBrochure && p.brochureUrl && (
+        <BrochureDialog project={p} onClose={() => setWantBrochure(false)} />
+      )}
 
       {lb > -1 && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Gallery"

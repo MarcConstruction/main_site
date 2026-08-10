@@ -22,7 +22,8 @@ const COLUMNS = [
   "slug", "name", "locality", "status", "type", "configs", "config_label",
   "rera", "qr_url", "towers", "possession", "line", "img", "coords", "plans",
   "description", "price_band", "specs", "amenities", "videos", "model_url",
-  "media", "progress", "nearby", "models", "carpet", "rera_applicable"
+  "media", "progress", "nearby", "models", "carpet", "rera_applicable",
+  "brochure_url"
 ].join(",");
 
 /* The committed projects.json is the fallback. A build that cannot reach
@@ -58,14 +59,15 @@ if (rows.length === 0) {
 
 /* Back to the site's camelCase, dropping nulls so the JSON stays as clean as
    the hand-written one it replaces. */
-const projects = rows.map(({ config_label, model_url, price_band, qr_url, rera_applicable, ...r }) => {
+const projects = rows.map(({ config_label, model_url, price_band, qr_url, rera_applicable, brochure_url, ...r }) => {
   const out = {
     ...r,
     configLabel: config_label,
     modelUrl: model_url,
     priceBand: price_band,
     qrUrl: qr_url,
-    reraApplicable: rera_applicable
+    reraApplicable: rera_applicable,
+    brochureUrl: brochure_url
   };
   for (const [k, v] of Object.entries(out)) {
     if (v === null || v === undefined) delete out[k];

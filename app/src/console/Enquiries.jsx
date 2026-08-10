@@ -19,10 +19,10 @@ const pillClass = (s) =>
    would. Quoting every field keeps commas in messages from splitting columns. */
 function toCSV(rows, names) {
   const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const head = ["Received", "Name", "Phone", "Project", "Status", "Message"];
+  const head = ["Received", "Name", "Phone", "Project", "Source", "Status", "Message"];
   const body = rows.map((r) =>
     [new Date(r.created_at).toLocaleString("en-IN"), r.name, r.phone,
-     names[r.project] || r.project || "", r.status, r.message].map(cell).join(",")
+     names[r.project] || r.project || "", r.source || "contact", r.status, r.message].map(cell).join(",")
   );
   return [head.map(cell).join(","), ...body].join("\r\n");
 }
@@ -33,6 +33,9 @@ export default function Enquiries({ projectNames, onCount }) {
   const [filter, setFilter] = useState("All");
   const [q, setQ] = useState("");
   const [range, setRange] = useState("This month");
+  /* Where the lead came from, not what stage it is at — a brochure download
+     is a warmer lead than a form fill and worth filtering to on its own. */
+  const [source, setSource] = useState("All");
   const [ticked, setTicked] = useState(() => new Set());
 
   useEffect(() => {
@@ -47,10 +50,11 @@ export default function Enquiries({ projectNames, onCount }) {
     const needle = q.trim().toLowerCase();
     return rows.filter((r) =>
       (filter === "All" || r.status === filter) &&
+      (source === "All" || (r.source || "contact") === source) &&
       (!from || new Date(r.created_at) >= from) &&
       (!needle || `${r.name || ""} ${r.phone}`.toLowerCase().includes(needle))
     );
-  }, [rows, filter, q, range]);
+  }, [rows, filter, q, range, source]);
 
   const setStatus = async (row, status) => {
     const before = row.status;
@@ -106,6 +110,14 @@ export default function Enquiries({ projectNames, onCount }) {
           ))}
         </div>
 
+        <div className="filters">
+          {["All", "contact", "brochure"].map((s) => (
+            <button key={s} aria-pressed={source === s} onClick={() => setSource(s)}>
+              {s === "All" ? "Any source" : s === "brochure" ? "Brochure downloads" : "Contact form"}
+            </button>
+          ))}
+        </div>
+
         {error && <p className="err" role="alert">{error}</p>}
         {rows === null && !error && <p className="spinner">Loading enquiries…</p>}
 
@@ -115,7 +127,7 @@ export default function Enquiries({ projectNames, onCount }) {
               <thead>
                 <tr>
                   <th style={{ width: 34 }} />
-                  <th>Received</th><th>Name</th><th>Phone</th><th>Project</th><th>Status</th>
+                  <th>Received</th><th>Name</th><th>Phone</th><th>Project</th><th>Source</th><th>Status</th>
                   <th style={{ textAlign: "right" }}>Actions</th>
                 </tr>
               </thead>
@@ -130,6 +142,11 @@ export default function Enquiries({ projectNames, onCount }) {
                     <td className="cell-name">{r.name || "—"}</td>
                     <td className="cell-mono" style={{ fontSize: 14 }}>{r.phone}</td>
                     <td>{projectNames[r.project] || r.project || "—"}</td>
+                    <td>
+                      <span className={`pill${(r.source || "contact") === "brochure" ? " booked" : ""}`}>
+                        {(r.source || "contact") === "brochure" ? "Brochure" : "Form"}
+                      </span>
+                    </td>
                     <td>
                       <select className={pillClass(r.status)} value={r.status}
                         onChange={(e) => setStatus(r, e.target.value)}
@@ -148,7 +165,7 @@ export default function Enquiries({ projectNames, onCount }) {
                   </tr>
                 ))}
                 {!shown.length && (
-                  <tr><td colSpan={7} style={{ color: "var(--muted)", padding: 30 }}>
+                  <tr><td colSpan={8} style={{ color: "var(--muted)", padding: 30 }}>
                     Nothing matches that filter.
                   </td></tr>
                 )}

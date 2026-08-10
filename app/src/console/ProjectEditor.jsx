@@ -44,7 +44,7 @@ const serialiseSpecs = (rows) =>
 const BLANK = {
   slug: "", name: "", locality: "", status: "Ongoing", type: "Residential",
   configs: [], config_label: "", rera: "", qr_url: "", towers: "", possession: "",
-  line: "", img: "", coords: "", description: "", price_band: "", specs: "", carpet: "", rera_applicable: true,
+  line: "", img: "", coords: "", description: "", price_band: "", specs: "", carpet: "", rera_applicable: true, brochure_url: "",
   amenities: [], plans: [], media: [], videos: [], progress: [], nearby: [], models: [], model_url: "", published: false
 };
 
@@ -69,6 +69,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
   const [planBusy, setPlanBusy] = useState(-1);
   const [newAmenity, setNewAmenity] = useState("");
   const [nearbyBusy, setNearbyBusy] = useState(false);
+  const [brochureBusy, setBrochureBusy] = useState(false);
   const [specRows, setSpecRows] = useState(() => parseSpecRows(BLANK.specs));
   const fileRef = useRef(null);
 
@@ -165,6 +166,7 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
          its https CHECK still holds and a deploy landing before the migration
          still has something to show. */
       model_url: models[0]?.url ?? null,
+      brochure_url: (p.brochure_url || "").trim() || null,
       videos: (p.videos || []).filter((vd) => vd.url?.trim()),
       specs: serialiseSpecs(specRows),
       slug: p.slug || slugify(p.name),
@@ -708,6 +710,43 @@ export default function ProjectEditor({ id, onBack, onChanged }) {
                   onClick={() => set({ videos: [...(p.videos || []), { label: "", url: "", len: "" }] })}>
                   + Add a video
                 </button>
+
+                <span className="mono legend" style={{ marginTop: 30 }}>Brochure</span>
+                <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>
+                  A PDF. &ldquo;Download brochure&rdquo; on the project page asks for a name
+                  and phone number first, records it as an enquiry, and then hands the
+                  file over — so a download is a lead rather than an anonymous hit.
+                  Without one, the button is not shown at all.
+                </p>
+                <div className="plan-row">
+                  <div className="plan-sheet">
+                    {p.brochure_url
+                      ? <a href={p.brochure_url} target="_blank" rel="noopener noreferrer"
+                          title="Open the brochure"><Doc /><span className="mono">PDF</span></a>
+                      : <span className="mono">None</span>}
+                  </div>
+                  <div className="grow">
+                    <div className="plan-actions">
+                      <button className="btn btn-sm" disabled={brochureBusy}
+                        onClick={() => document.getElementById("brochure-file").click()}>
+                        {brochureBusy ? "Uploading…" : p.brochure_url ? "Replace brochure" : "Upload brochure"}
+                      </button>
+                      <input id="brochure-file" type="file" accept="application/pdf" hidden
+                        onChange={async (e) => {
+                          const f = e.target.files?.[0];
+                          if (!f) return;
+                          setBrochureBusy(true); setError("");
+                          try { set({ brochure_url: await upload(f) }); }
+                          catch (err) { setError(err.message); }
+                          finally { setBrochureBusy(false); }
+                        }} />
+                      {p.brochure_url && (
+                        <button className="btn btn-sm danger"
+                          onClick={() => set({ brochure_url: "" })}>Remove</button>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
                 <span className="mono legend" style={{ marginTop: 30 }}>3D walkthroughs</span>
                 <p className="sub" style={{ color: "var(--muted)", marginTop: -8 }}>

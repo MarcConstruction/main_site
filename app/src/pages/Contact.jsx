@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Header, SlimFooter, WhatsAppFab, ActionBar } from "../components/Chrome.jsx";
 import { PROJECTS, PHONE, PHONE_DISPLAY, WHATSAPP } from "../data/projects.js";
+import { sendEnquiry } from "../lib/enquiry.js";
 
 const OFFICE = [
   ["OFFICE", "Marc House, Opposite Datta Mandir, Nagar–Manmad Road, Savedi, Ahilyanagar (Ahmednagar), Maharashtra 414003"],
@@ -8,13 +9,6 @@ const OFFICE = [
   ["EMAIL", "info@marcconstruction.in"],
   ["ENTITY", "Madhumalati Constructions Pvt Ltd · CIN U45202MH1996PTC100650"]
 ];
-
-/* Supabase over plain fetch. PostgREST is just HTTP, and one insert does not
-   justify @supabase/supabase-js -- the README asks that a dependency earn its
-   place. The anon key is meant to ship in the browser; row-level security in
-   supabase/enquiries.sql is what actually protects the table. */
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export default function Contact() {
   const [status, setStatus] = useState("idle");
@@ -32,22 +26,13 @@ export default function Contact() {
 
     setStatus("sending");
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/enquiries`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal"
-        },
-        body: JSON.stringify({
-          name: data.name || null,
-          phone: data.phone,
-          project: data.project || null,
-          message: data.message || null
-        })
+      await sendEnquiry({
+        name: data.name,
+        phone: data.phone,
+        project: data.project,
+        message: data.message,
+        source: "contact"
       });
-      if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
       setStatus("sent");
     } catch (err) {
       console.error("enquiry failed", err);
