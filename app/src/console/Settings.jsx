@@ -143,7 +143,7 @@ export default function Settings({ onChanged }) {
 
         <span className="mono legend" style={{ marginTop: 30 }}>Footer legal line</span>
         <div className="field">
-          <label htmlFor="s-legal">CIN, MahaRERA and GST</label>
+          <label htmlFor="s-legal">Memberships, MahaRERA and GST</label>
           <textarea className="input" id="s-legal" value={s.legal || ""}
             onChange={(e) => set({ legal: e.target.value })} />
           <span className="mono" style={{ display: "block", marginTop: 6 }}>

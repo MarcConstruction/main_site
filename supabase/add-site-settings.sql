@@ -28,7 +28,7 @@ values (
   'https://wa.me/919552555621',
   'info@marcconstruction.in',
   'Marc House, Opp. Datta Mandir, Nagar–Manmad Road, Savedi, Ahilyanagar 414003',
-  'CIN U45202MH1996PTC100650 · MAHARERA REGISTERED · GST 27AAECM1234A1Z5 · © 2026 MARC CONSTRUCTION'
+  'MEMBER OF MAREDCO AND MBVA · MAHARERA REGISTERED · GST 27AAECM1234A1Z5 · © 2026 MARC CONSTRUCTION'
 )
 on conflict (id) do nothing;
 

@@ -124,7 +124,8 @@ export default function Home() {
               <div className="fig"><b><Counter to={1000} suffix="+" /></b><span className="mono">FAMILIES HOUSED</span></div>
               <div className="creds">
                 <span className="mono">CREDAI MEMBER</span>
-                <span className="mono">ISO 9001</span>
+                <span className="mono">MAREDCO MEMBER</span>
+                <span className="mono">MBVA MEMBER</span>
                 <span className="mono">MAHARERA REGISTERED</span>
               </div>
             </div>

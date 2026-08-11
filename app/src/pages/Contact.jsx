@@ -7,7 +7,7 @@ const OFFICE = [
   ["OFFICE", "Marc House, Opposite Datta Mandir, Nagar–Manmad Road, Savedi, Ahilyanagar (Ahmednagar), Maharashtra 414003"],
   ["HOURS", "Monday–Sunday, 10:00–19:00 · Site visits by appointment"],
   ["EMAIL", "info@marcconstruction.in"],
-  ["ENTITY", "Madhumalati Constructions Pvt Ltd · CIN U45202MH1996PTC100650"]
+  ["ENTITY", "Madhumalati Constructions Pvt Ltd · Member of MAREDCO and MBVA"]
 ];
 
 export default function Contact() {

@@ -21,8 +21,8 @@ const LEADERS = [
 const REGS = [
   ["MahaRERA", "ALL ACTIVE PROJECTS REGISTERED"],
   ["CREDAI", "MEMBER · AHMEDNAGAR CHAPTER"],
-  ["ISO 9001", "QUALITY MANAGEMENT SYSTEM"],
-  ["CIN", "U45202MH1996PTC100650"]
+  ["MAREDCO", "MEMBER"],
+  ["MBVA", "MEMBER"]
 ];
 
 export default function About() {
