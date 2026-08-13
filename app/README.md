@@ -155,7 +155,7 @@ number. Add staff by hand under Authentication → Users.
 
 | What | Where |
 | --- | --- |
-| CMS login | Needs a Git repo + Netlify Identity/Git Gateway enabled (see Admin above) |
+| CMS login | Gone, deliberately — the console replaced it. **Do not enable Netlify Identity or Git Gateway to bring it back:** Git Gateway hands a web login commit access to this repository, and this repository builds the live site. The Identity widget loader was removed from `index.html` for the same reason. If Identity is still switched on in the Netlify dashboard, turn it off — the CMS it authenticated no longer exists. |
 | All-sites map | `ProjectDetail.jsx` — set `MY_MAP_ID` from a Google My Map (import `../marc-sites.csv`) |
 | 3D model, plan/brochure/RERA downloads | buttons are inert |
 

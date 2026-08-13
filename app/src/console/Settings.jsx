@@ -36,6 +36,22 @@ export default function Settings({ onChanged }) {
       return;
     }
 
+    /* Every social link is rendered as an <a href> in the footer of every
+       page, so the scheme is not a formatting question. A javascript: URL
+       pasted here — by accident or by somebody who should not be signed in —
+       would be live sitewide. The database refuses these too
+       (site_socials_https); this is here so the answer is a sentence rather
+       than a constraint violation. */
+    const links = socials
+      .map((x) => ({ label: (x.label || "").trim(), url: (x.url || "").trim() }))
+      .filter((x) => x.url);
+    const badLink = links.find((x) => !/^https:\/\//i.test(x.url));
+    if (badLink) {
+      setError(`The link “${badLink.url}” must start with https:// — paste the full address from the browser's address bar.`);
+      setSaving(false);
+      return;
+    }
+
     const body = {
       phone: `+${digits}`,
       phone_display: s.phone_display?.trim() || `+${digits}`,
@@ -43,9 +59,7 @@ export default function Settings({ onChanged }) {
       email: (s.email || "").trim(),
       address: (s.address || "").trim(),
       legal: (s.legal || "").trim(),
-      socials: socials
-        .map((x) => ({ label: (x.label || "").trim(), url: (x.url || "").trim() }))
-        .filter((x) => x.url)
+      socials: links
     };
 
     try {

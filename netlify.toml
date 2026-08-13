@@ -13,16 +13,66 @@
   # never silently break the build.
   NODE_VERSION = "22"
 
-# The admin is a real directory with its own index.html; make sure the bare
-# /admin path lands there rather than falling through.
-[[redirects]]
-  from = "/admin"
-  to = "/admin/index.html"
-  status = 200
-
-# Keep the CMS out of search results.
+# Security headers, on every response.
+#
+# The enforcing CSP here carries only the three directives that cannot break a
+# page: no framing, no injected <base>, no form posting off-site. The full
+# policy ships beside it as Report-Only — see the note under it.
 [[headers]]
-  for = "/admin/*"
+  for = "/*"
+  [headers.values]
+    # Clickjacking. The console has a login form and a Delete button, and
+    # without this any site can hide it in a frame under its own buttons.
+    # X-Frame-Options for old browsers, frame-ancestors for everything else.
+    X-Frame-Options = "DENY"
+    Content-Security-Policy = "frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+    # Stop the browser second-guessing a Content-Type. Relevant because the
+    # media bucket takes staff uploads and serves them from a public URL.
+    X-Content-Type-Options = "nosniff"
+
+    # Other sites get the origin, never the path — a project URL carries the
+    # slug of whatever someone was reading.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Nothing here asks for any of these. Saying so stops an embedded frame
+    # asking on our behalf.
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()"
+
+    # A year, subdomains included. Only add `preload` once every subdomain is
+    # certainly https — that part is very hard to undo.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+# The full policy, in Report-Only: it blocks nothing at all, it only logs what
+# it WOULD block to the browser console.
+#
+# There is no known violation left — the last inline <script> was the dead
+# Netlify Identity loader deleted from index.html, and `grep -c '<script>'`
+# across dist/ now returns zero on every page. What is NOT yet verified is the
+# third-party list: the Google Fonts import in marc.css, and the frame-src
+# origins for the map, the YouTube embeds and the S3 3D tours.
+#
+# So: deploy, open every page — a project with a 3D tour, a video, a PDF floor
+# plan and the map — and read the console. Silence means the policy is right,
+# at which point rename this header to Content-Security-Policy and delete the
+# three-directive one above. That rename is the whole promotion.
+#
+# Enforcing it unverified would risk blanking the floor plans, the map, the 3D
+# tours and the videos on a live sales site. That is not a trade worth making
+# for a header nobody has watched run yet.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy-Report-Only = "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co https://overpass-api.de; object-src 'self' https://*.supabase.co; frame-src https://www.youtube-nocookie.com https://www.google.com https://maps.google.com https://*.s3.ap-south-1.amazonaws.com; upgrade-insecure-requests"
+
+# Keep the console out of search results. The page carries its own noindex
+# meta tag too; this covers what a crawler fetches without parsing.
+#
+# Replaces a block aimed at /admin/*, a path that stopped existing when the
+# Netlify CMS was dropped for the React console — so the site has been serving
+# that header to nothing for a while.
+[[headers]]
+  for = "/console.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 

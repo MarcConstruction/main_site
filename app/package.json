@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "eslint . && node scripts/content.mjs && node scripts/thumbs.mjs",
+    "prebuild": "eslint . && node --test \"src/**/*.test.js\" && node scripts/content.mjs && node scripts/thumbs.mjs",
     "lint": "eslint .",
+    "test": "node --test \"src/**/*.test.js\"",
     "content": "node scripts/content.mjs",
     "build": "vite build",
     "thumbs": "node scripts/thumbs.mjs",

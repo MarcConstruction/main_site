@@ -36,14 +36,28 @@ as $$
   );
 $$;
 
--- 4. And make sure every signed-up account is on the staff list. Sign-ups are
---    disabled, so auth.users only contains people you created by hand.
-insert into public.staff (email, name)
-select u.email, coalesce(s.name, 'Marc — Director')
-from auth.users u
-left join public.staff s on lower(s.email) = lower(u.email)
-where s.email is null
-on conflict (email) do nothing;
+-- 4. DISABLED. It used to promote every account in auth.users to staff, on
+--    the reasoning that sign-ups are disabled so auth.users could only hold
+--    people created by hand.
+--
+--    That reasoning expires the moment sign-ups are turned on, and this file
+--    stays in the repository looking like a safe diagnostic to re-run. Then
+--    one command grants every stranger who registered full staff rights:
+--    every enquiry, every phone number, delete on every project.
+--
+--    Add a colleague explicitly instead — you know their address, and typing
+--    it is the point:
+--
+--      insert into public.staff (email, name)
+--      values ('them@marcconstruction.in', 'Their Name')
+--      on conflict (email) do nothing;
+--
+-- insert into public.staff (email, name)
+-- select u.email, coalesce(s.name, 'Marc — Director')
+-- from auth.users u
+-- left join public.staff s on lower(s.email) = lower(u.email)
+-- where s.email is null
+-- on conflict (email) do nothing;
 
 -- 5. Confirm. Every row should now read true.
 select

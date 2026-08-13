@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { db, logActivity } from "./api.js";
+import { toCSV } from "../lib/csv.js";
 
 const STATUSES = ["New", "Called", "Site visit", "Booked", "Closed"];
 const RANGES = {
@@ -13,19 +14,6 @@ const when = (iso) =>
 
 const pillClass = (s) =>
   `pill${s === "New" ? " new" : s === "Booked" ? " booked" : ""}`;
-
-/* Excel opens a CSV with the system locale's separator, and a phone number
-   like 9822041155 arrives as a number and loses nothing — but a leading zero
-   would. Quoting every field keeps commas in messages from splitting columns. */
-function toCSV(rows, names) {
-  const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  const head = ["Received", "Name", "Phone", "Project", "Source", "Status", "Message"];
-  const body = rows.map((r) =>
-    [new Date(r.created_at).toLocaleString("en-IN"), r.name, r.phone,
-     names[r.project] || r.project || "", r.source || "contact", r.status, r.message].map(cell).join(",")
-  );
-  return [head.map(cell).join(","), ...body].join("\r\n");
-}
 
 export default function Enquiries({ projectNames, onCount }) {
   const [rows, setRows] = useState(null);

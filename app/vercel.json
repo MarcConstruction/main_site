@@ -2,6 +2,18 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'none'; base-uri 'self'; form-action 'self'" },
+        { "key": "Content-Security-Policy-Report-Only", "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co https://overpass-api.de; object-src 'self' https://*.supabase.co; frame-src https://www.youtube-nocookie.com https://www.google.com https://maps.google.com https://*.s3.ap-south-1.amazonaws.com; upgrade-insecure-requests" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=()" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+      ]
+    },
+    {
       "source": "/console.html",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },

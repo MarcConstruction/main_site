@@ -7,25 +7,18 @@
 <meta name="description" content="Marc Construction has built in and around Ahilyanagar since 1987. 100+ delivered addresses, five sites under construction, every project MahaRERA registered." />
 <link rel="icon" href="/assets/marc-mark.png" />
 <link rel="apple-touch-icon" href="/assets/marc-mark.png" />
-<script>
-  /* Netlify Identity invite, recovery and confirmation links land on the site
-     root with a token in the hash. Load the widget only then and send the
-     editor to /admin/ — it exists for a handful of staff, and every other
-     visitor is here to look at flats, not to pay for an auth bundle. */
-  if (/\b(invite_token|recovery_token|confirmation_token|email_change_token)=/.test(location.hash)) {
-    var s = document.createElement("script");
-    s.src = "https://identity.netlify.com/v1/netlify-identity-widget.js";
-    s.onload = function () {
-      window.netlifyIdentity.on("init", function (user) {
-        if (!user) {
-          window.netlifyIdentity.on("login", function () { location.href = "/admin/"; });
-        }
-      });
-      window.netlifyIdentity.init();
-    };
-    document.head.appendChild(s);
-  }
-</script>
+<!-- The Netlify Identity widget loader used to sit here. It fetched a script
+     from identity.netlify.com whenever the URL fragment carried an Identity
+     token, then sent the visitor to /admin/ — the CMS that the React console
+     at /console.html replaced. The path has not existed for some time, so the
+     block was a third-party script any stranger could trigger on the homepage
+     with a link ending #invite_token=anything, in aid of a redirect to a 404.
+
+     Removing it also empties the last inline script out of the build, which
+     is what lets script-src 'self' hold.
+
+     Netlify Identity may still be switched on in the Netlify dashboard, and
+     that is the part this deletion does NOT fix — see the README. -->
 </head>
 <body>
 <div id="root"></div>
